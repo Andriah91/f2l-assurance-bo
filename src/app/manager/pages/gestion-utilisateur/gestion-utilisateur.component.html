@@ -1,0 +1,234 @@
+<div class="grid p-fluid">
+ 
+  <div class="col-12">
+    <div class="card">
+      <h5 class="title">Liste Utilisateurs</h5>
+      <br>
+      <div class="container">
+        <div class="title">
+          <app-search
+          (searchs)="searchUsers($event)"
+          [keyword]="keyWord"
+          ></app-search>
+        </div>
+        <p-button label="Ajouter" icon="pi pi-plus" severity="success" (click)="showModalCreateUser()"></p-button>
+      </div>
+      <br>
+      <p-toast></p-toast>
+      <p-confirmDialog key="positionDialog"></p-confirmDialog>
+      <ngx-spinner [name]="'deleteuser'" bdColor="rgba(0, 0, 0, 0.8)" size="default" color="#fff" type="line-scale"
+        [fullScreen]="false">
+        <p style="color: white"> Chargement... </p>
+      </ngx-spinner>
+      <p-table [value]="users" dataKey="first_name" [expandedRowKeys]="expandedRows" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 5%"></th>
+            <th style="width: 22%;">Nom</th>
+            <th style="width: 19%;">Prénom(s)</th>
+            <th style="width: 20%;">Email</th>
+            <th style="width: 15%;">Numéro</th>
+            <th style="width: 12%;">Status</th>
+            <th style="width: 7%;"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-user let-expanded="expanded">
+          <tr>
+            <td>
+              <button type="button" pButton pRipple [pRowToggler]="user"
+                class="p-button-text p-button-rounded p-button-plain"
+                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+            </td>
+            <td (click)="navigateContrat(user.id,user.first_name)" style="min-width: 12rem;">{{user.first_name}}</td>
+            <td (click)="navigateContrat(user.id,user.first_name)">{{user.last_name}}</td>
+            <td (click)="navigateContrat(user.id,user.first_name)" style="min-width: 8rem;">{{user.email}}</td>
+            <td (click)="navigateContrat(user.id,user.first_name)">{{user.phone}}</td>
+            <td (click)="navigateContrat(user.id,user.first_name)">
+              <i class="pi" [ngClass]="{
+                'text-green-500 pi-check-circle': user.is_valid === 1,
+                'text-red-500 pi-times-circle': user.is_valid === 0
+              }"></i>
+            </td>
+            <td>
+              <div class="flex">
+                <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info mr-2"
+                  (click)="getDEtailsUsers(user.id)"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                  (click)="deleteUser(user.id, $event)"></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-c>
+          <tr>
+            <td colspan="7">
+              <div class="p-3">
+                <p-table [value]="c.contrats" dataKey="_id" responsiveLayout="scroll">
+                  <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="contrat.title">Titre <p-sortIcon field="contrat.title"></p-sortIcon></th>
+            <th>Date de création</th>
+            <th></th>
+            <th>
+              <p-button icon="pi pi-plus" [rounded]="true" [text]="true" (click)="openAddContrat(c.id)"></p-button>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-contrat>
+          <tr>
+            <td>{{contrat.title}}</td>
+            <td>{{contrat.creation_date}}</td>
+            <td>
+              <div class="flex">
+                <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                  (click)="deleteContrat(contrat.id, $event)"></p-button>
+              </div>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6">No contrat.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    </td>
+    </tr>
+    </ng-template>
+    </p-table>
+    <br>
+    <app-pagination *ngIf="users.length"
+    [dataNumberShow]="dataNumberShow"
+    [offset]="offset"
+    [limit]="limit"
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    (changePage)="changePage($event)"
+    (getPageNumbers)="getPageNumbers()"
+    >
+  
+    </app-pagination>
+    <div class="border-round border-1 surface-border p-4" *ngIf="skeleton">
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog [(visible)]="checkDetailsUsers" header="A propos de {{detailUser.first_name}}" [modal]="true"
+  [style]="{width:'40%'}" position="top">
+  <ng-template pTemplate="content">
+    <div class="col-12 md:col-12">
+      <div class="p-formgrid grid">
+        <div class="field col">
+          <h5 htmlFor="Nom">Nom</h5>
+          <input pInputText id="Nom" type="text" [(ngModel)]="detailUser.first_name" />
+        </div>
+        <div class="field col">
+          <h5 htmlFor="Prénom(s)">Prénom(s)</h5>
+          <input pInputText id="Prénom(s)" type="text" [(ngModel)]="detailUser.last_name" />
+        </div>
+      </div>
+      <div>
+        <h5>N° enregistrement</h5>
+        <input type="text" pInputText [(ngModel)]="detailUser.registration_number">
+        <h5>Email</h5>
+        <input type="text" pInputText [(ngModel)]="detailUser.email">
+        <h5>Rôle</h5>
+        <p-dropdown [options]="isAdmin" [(ngModel)]="detailUser.is_admin" optionLabel="name" [showClear]="true"
+          placeholder="{{oneCheckAdmin(detailUser.is_admin)}}"></p-dropdown>
+        <h5>Numéro</h5>
+        <input type="text" pInputText [(ngModel)]="detailUser.phone">
+      </div>
+      <br>
+      <div class="text-center">
+        <h5>Valider / Desactiver</h5>
+        <p-inputSwitch [ngModel]="checked" (ngModelChange)="oneCheckValid($event)"></p-inputSwitch>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Modifier" (click)="updateUser()"
+      [disabled]="disableUpdate"></button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="modalCreateUser" header="Nouveau" [modal]="true" [style]="{width:'40%'}" position="top">
+  <ng-template pTemplate="content">
+    <div class="col-12 md:col-12">
+      <div class="p-formgrid grid">
+        <div class="field col">
+          <h5 htmlFor="Nom">Nom</h5>
+          <input pInputText id="Nom" type="text" [(ngModel)]="userBody.first_name" placeholder="Nom" />
+        </div>
+        <div class="field col">
+          <h5 htmlFor="Prénom(s)">Prénom(s)</h5>
+          <input pInputText id="Prénom(s)" type="text" [(ngModel)]="userBody.last_name" placeholder="Prénom" />
+        </div>
+      </div>
+      <div>
+        <h5>N° enregistrement</h5>
+        <input type="text" pInputText [(ngModel)]="userBody.registration_number" placeholder="1234567">
+        <h5>Email</h5>
+        <input type="text" pInputText [(ngModel)]="userBody.email" placeholder="exemple@ex.com">
+        <h5>Mot de passe</h5>
+        <p-password [(ngModel)]="userBody.password" [toggleMask]="true" [feedback]="false"></p-password>
+        <h5>Confirmer le mot de passe</h5>
+        <input type="password" pInputText [(ngModel)]="userBody.confirmPassword"
+          placeholder="Confirmer le mot de passe">
+        <h5>Rôle</h5>
+        <p-dropdown [options]="isAdmin" [(ngModel)]="userBody.is_admin" optionLabel="name" [showClear]="true"
+          placeholder="Admin / Client"></p-dropdown>
+        <h5>Numéro</h5>
+        <input type="text" pInputText placeholder="+261 34 xx xxx xx" [(ngModel)]="userBody.phone">
+      </div>
+      <br>
+      <div class="text-center">
+        <h5>Valider / Desactiver</h5>
+        <p-inputSwitch [ngModel]="checked" (ngModelChange)="oneCheckValid($event)"></p-inputSwitch>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Ajouter" (click)="createUser()"
+      [disabled]="disableUpdate"></button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="addContrat" header="Nouveau contrat" [modal]="true" [draggable]="false" [resizable]="false" [style]="{width:'30%'}" position="top">
+  <ng-template pTemplate="content">
+    <div class="col-12 md:col-12">
+      <div>
+        <h5 htmlFor="Nom">Titre</h5>
+        <input pInputText id="Nom" type="text" [(ngModel)]="contratBody.title" placeholder="Titre" />
+        <h5 htmlFor="Date de création">Date de création</h5>
+        <p-calendar [inline]="true" [(ngModel)]="contratBody.creation_date" [iconDisplay]="'input'" [showIcon]="true"
+          [dateFormat]="'dd/mm/yy'"></p-calendar>
+      </div>
+      <br>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Ajouter" (click)="createContrat()"
+      [disabled]="disableUpdate"></button>
+  </ng-template>
+</p-dialog>

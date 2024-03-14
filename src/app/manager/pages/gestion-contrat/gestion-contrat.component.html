@@ -1,0 +1,181 @@
+<div class="grid p-fluid">
+
+  <div class="col-12">
+    <div class="card">
+      <div class="container">
+        <h5 class="title">Liste Contrats de {{nameUser}}</h5>
+        <p-button label="Ajouter" icon="pi pi-plus" severity="success" (click)="showModalCreateContact()"></p-button>
+      </div>
+      <p-toast></p-toast>
+      <p-confirmDialog  key="positionDialog"></p-confirmDialog>
+      <ngx-spinner [name]="'deleteuser'" bdColor="rgba(0, 0, 0, 0.8)" size="default" color="#fff" type="line-scale"
+        [fullScreen]="false">
+        <p style="color: white"> Chargement... </p>
+      </ngx-spinner>
+      <p-table [value]="contratList" dataKey="title" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 5%"></th>
+            <th style="width: 22%;">Titre</th>
+            <th style="width: 19%;">Date de création</th>
+            <th style="width: 7%;"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-contrat let-expanded="expanded">
+          <tr>
+            <td>
+              <button type="button" pButton pRipple [pRowToggler]="contrat"
+                class="p-button-text p-button-rounded p-button-plain"
+                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+            </td>
+            <td style="min-width: 12rem;">{{contrat.title}}</td>
+            <td>{{contrat.creation_date}}</td>
+            <td>
+              <div class="flex">
+                  <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info mr-2"
+                    (click)="showDetailsContrat(contrat)"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                  (click)="deleteContrats(contrat.id, $event)"></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-c>
+          <tr>
+            <td colspan="7">
+              <div class="p-3">
+                <p-table [value]="c.documents" dataKey="_id" responsiveLayout="scroll">
+                  <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 20%;"></th>
+            <th pSortableColumn="contrat.title">Titre </th>
+            <th>Type</th>
+            <th></th>
+            <th>
+              <p-button icon="pi pi-plus" [rounded]="true" [text]="true" (click)="openModal(c.id)"></p-button>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-doc>
+          <tr>
+            <td></td>
+            <td><a href="#" (click)="openUrl(doc.path)">{{ doc.titre }}</a></td>
+
+
+            <td>{{doc.type}}</td>
+            <td>
+              <div class="flex">
+                <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                  (click)="deleteDocument(doc.id, $event)"></p-button>
+              </div>
+            </td>
+            <td></td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6">No documents.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    </td>
+    </tr>
+    </ng-template>
+    </p-table>
+    <div class="border-round border-1 surface-border p-4" *ngIf="skeleton">
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog header="Header" [(visible)]="ajouterDoc" [modal]="true" [style]="{ width: '40vw' }" [draggable]="false"
+  [resizable]="false">
+  <h5>Titre du document</h5>
+  <input type="text" pInputText [(ngModel)]="titre">
+  <br>
+  <p-fileUpload [showUploadButton]="false" cancelLabel="Annuler" chooseLabel="Choisir un fichier" name="demo[]"
+    (onSelect)="getFileUpload($event)" (onUpload)="onUpload()" [multiple]="true" accept="image/*,application/pdf"
+    maxFileSize="1000000">
+    <ng-template pTemplate="content">
+
+      <div class="text-center">
+        <p-button icon="pi pi-check" label="Upload" (click)="onUpload()" severity="info"></p-button>
+      </div>
+    </ng-template>
+  </p-fileUpload>
+</p-dialog>
+
+<p-dialog [(visible)]="detailsContrat" header="A propos du contrat N° {{bodyContrat.id}}" [modal]="true"
+  [style]="{width:'40%'}" position="top">
+  <ng-template pTemplate="content">
+    <div class="col-12 md:col-12">
+      <div class="p-formgrid grid">
+        <div class="field col">
+          <h5 htmlFor="Titre">Titre</h5>
+          <input pInputText id="Titre" type="text" [(ngModel)]="bodyContrat.title" />
+        </div>
+        <div class="field col">
+          <h5 htmlFor="Date de création">Date de création</h5>
+          <input pInputText id="Date de création" type="date" [(ngModel)]="bodyContrat.creation_date" />
+        </div>
+      </div>
+      <div>
+        <h5>Utilisateur</h5>
+        <input type="text" pInputText [(ngModel)]="bodyContrat.user_id">
+      </div>
+      <br>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Modifier" (click)="updateContrat()"
+      [disabled]="disableUpdate"></button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="checkAddContrat" header="Nouveau contrat" [modal]="true"
+  [style]="{width:'40%'}" position="top">
+  <ng-template pTemplate="content">
+    <div class="col-12 md:col-12">
+      <div class="p-formgrid grid">
+        <div class="field col">
+          <h5 htmlFor="Titre">Titre</h5>
+          <input pInputText id="Titre" type="text" [(ngModel)]="create.title" />
+        </div>
+        <div class="field col">
+          <h5 htmlFor="Date de création">Date de création</h5>
+          <input pInputText id="Date de création" type="date" [(ngModel)]="create.creation_date" />
+        </div>
+      </div>
+      <div>
+        <h5>Utilisateur</h5>
+        <input type="text" pInputText [(ngModel)]="create.user_id">
+      </div>
+      <br>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Modifier" (click)="updateContrat()"
+      [disabled]="disableUpdate"></button>
+  </ng-template>
+</p-dialog>

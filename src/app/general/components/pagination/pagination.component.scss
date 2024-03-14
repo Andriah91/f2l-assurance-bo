@@ -1,0 +1,28 @@
+.custom-paginator-5 {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .custom-paginator-5 button,
+  .custom-paginator-5 span {
+    padding: 5px;
+    margin: 0 3px;
+    cursor: pointer;
+  }
+  
+  .custom-paginator-5 span.selected-page {
+    background-color: #1de9b6 ;
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  ::ng-deep {
+    div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm {
+      background-color: #e06666 !important;
+    }
+  }
