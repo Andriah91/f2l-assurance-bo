@@ -3,6 +3,7 @@ import { ManagerComponent } from "./manager.component";
 import { GestionPersonnelComponent } from "./pages/gestion-contrat/gestion-contrat.component";
 import { GestionServicesComponent } from "./pages/gestion-utilisateur/gestion-utilisateur.component";
 import { NgModule } from "@angular/core";
+import { GestionAdministrateurComponent } from "./pages/gestion-administrateur/gestion-administrateur.component";
 
 const routes: Routes = [
   {
@@ -16,6 +17,10 @@ const routes: Routes = [
       {
         path: "utilsateur", // child route path
         component: GestionServicesComponent, // child route component that the router renders
+      },
+      {
+        path: "administrateur", // child route path
+        component: GestionAdministrateurComponent, // child route component that the router renders
       },
       {
         path: "",

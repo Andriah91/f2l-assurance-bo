@@ -11,10 +11,10 @@ interface expandedRows {
 
 @Component({
   selector: "app-gestion-services",
-  templateUrl: "./gestion-utilisateur.component.html",
-  styleUrls: ["./gestion-utilisateur.component.css"],
+  templateUrl: "./gestion-administrateur.component.html",
+  styleUrls: ["./gestion-administrateur.component.css"],
 })
-export class GestionServicesComponent implements OnInit {
+export class GestionAdministrateurComponent implements OnInit {
   expandedRows: expandedRows = {};
   environments: any;
   skeleton: boolean = true;
@@ -32,10 +32,9 @@ export class GestionServicesComponent implements OnInit {
     first_name: "",
     last_name: "",
     registration_number: "",
-    email: "",
     phone: "",
-    is_admin: "",
-    is_valid: 0,
+    is_admin: 1,
+    is_valid: 1,
   };
   isAdmin = [
     { name: "Admin", value: 1 },
@@ -53,8 +52,10 @@ export class GestionServicesComponent implements OnInit {
     registration_number: "",
     email: "",
     phone: "",
-    is_admin: 0,
-    is_valid: 0
+    is_admin: 1,
+    is_valid: 1,
+    password: "",
+    confirmPassword: "",
   };
   modalCreateUser: boolean = false;
   addContrat: boolean = false;
@@ -75,7 +76,7 @@ export class GestionServicesComponent implements OnInit {
 
   ngOnInit() {
     this.environments = environment;
-    this.getAllUsers();
+    this.getAllAdmins();
   }
 
   openAddContrat(id: any) {
@@ -111,7 +112,7 @@ export class GestionServicesComponent implements OnInit {
         summary: "Enregistré",
         detail: "Contrat créé avec success",
       });
-      this.getAllUsers();
+      this.getAllAdmins();
       this.contratBody = {
         title: "",
         creation_date: "",
@@ -132,7 +133,7 @@ export class GestionServicesComponent implements OnInit {
       acceptIcon: "none",
       rejectIcon: "none",
       acceptLabel: "Oui", 
-      rejectLabel: "Non",
+      rejectLabel: "Non", // Modi
 
       accept: () => {
         this.spinner.show("deletecontrat");
@@ -142,45 +143,50 @@ export class GestionServicesComponent implements OnInit {
             summary: "Confirmé",
             detail: "Contrat supprimé",
           });
-          this.getAllUsers();
+          this.getAllAdmins();
           this.spinner.hide("deletecontrat");
         });
       },
       reject: () => {
-    
+      
         this.spinner.hide("deletecontrat");
       },
     });
   }
 
-   isValidPhoneNumber(numero: string): boolean {
-    const regex = /^\d{9}$/;
-    return regex.test(numero);
-  }
   isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 }
 
   createUser() {
-    if ((!this.isValidPhoneNumber(this.userBody.phone))||(!this.isValidEmail(this.userBody.email))) {
+
+    if (!this.isValidEmail(this.userBody.email)) {
       this.messageService.add({
         severity: "error",
         summary: "Erreur",
-        detail: "Format de numéro de téléphone ou email invalide",
+        detail: "Les mots de passe ne correspondent pas.",
       });
       return;
     }
-    this.userBody.phone="+261"+this.userBody.phone;
 
-    this.serviceService.registerUser(this.userBody).subscribe(
+    if (this.userBody.password !== this.userBody.confirmPassword) {
+      this.messageService.add({
+        severity: "error",
+        summary: "Erreur",
+        detail: "Les mots de passe ne correspondent pas.",
+      });
+      return;
+    }
+
+    this.serviceService.registerAdmin(this.userBody).subscribe(
       (response: any) => {
         this.messageService.add({
           severity: "success",
           summary: "Enregistré",
-          detail: "Client enregistré avec success",
+          detail: "Utilisateur enregistré avec succès",
         });
-        this.getAllUsers();
+        this.getAllAdmins();
         this.modalCreateUser = false;
         this.clearForm();
       },
@@ -192,7 +198,7 @@ export class GestionServicesComponent implements OnInit {
         });
       }
     );
-   
+    
   }
 
   clearForm() {
@@ -200,7 +206,9 @@ export class GestionServicesComponent implements OnInit {
     this.userBody.last_name = "";
     this.userBody.registration_number = "";
     this.userBody.email = "";
-    this.userBody.is_admin = 0;
+    this.userBody.password = "";
+    this.userBody.confirmPassword = "";
+    this.userBody.is_admin = 1;
     this.userBody.phone = "";
     this.checked = false;
   }
@@ -213,7 +221,6 @@ export class GestionServicesComponent implements OnInit {
   oneCheckValid(value: any) {
     if (value) {
       this.detailUser.is_valid = 1;
-     
     } else {
       this.detailUser.is_valid = 0;
     }
@@ -221,12 +228,12 @@ export class GestionServicesComponent implements OnInit {
     this.checked = foundItem.status;
   }
 
-  searchUsers(key)
+  searchAdmins(key)
   {
       this.keyWord=key;
       this.offset=0;
       this.limit= this.dataNumberShow;
-      this.getAllUsers();
+      this.getAllAdmins();
       this.currentPage = 1
   }
 
@@ -242,17 +249,17 @@ export class GestionServicesComponent implements OnInit {
       this.offset=(this.dataNumberShow*(newPage-1));
       this.limit= this.dataNumberShow;
 
-    this.getAllUsers();
+    this.getAllAdmins();
     }
   }
 
-  getAllUsers() {
+  getAllAdmins() {
     const body = {
       key: this.keyWord,
       offset: this.offset,
       limit: this.limit
     }
-    this.serviceService.getAllUsers(body).subscribe((data: any) => {
+    this.serviceService.getAllAdmins(body).subscribe((data: any) => {
       this.users = data.users;
       this.totalPages=data.userCount;
       this.getPageNumbers();
@@ -264,15 +271,14 @@ export class GestionServicesComponent implements OnInit {
     this.checkDetailsUsers = true;
     this.serviceService.getDetailsUsers(id).subscribe((data: any) => {
       this.detailUser = data.user;
-      this.detailUser.phone= this.detailUser.phone.slice(4);
-      console.log(this.detailUser);
+      this.oneCheckValid(this.detailUser.is_valid);
     });
   }
 
   deleteUser(id: any, event: Event) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: "Etes-vous sur de supprimer cet utilisateur?",
+      message: "Etes-vous sur de supprimer cet administrateur?",
       header: "Confirmation",
       icon: "pi pi-info-circle",
       acceptButtonStyleClass: "p-button-danger p-button-text",
@@ -288,9 +294,9 @@ export class GestionServicesComponent implements OnInit {
           this.messageService.add({
             severity: "info",
             summary: "Confirmé",
-            detail: "Utilisateur supprimé",
+            detail: "Administrateur supprimé",
           });
-          this.getAllUsers();
+          this.getAllAdmins();
           this.spinner.hide("deleteuser");
         });
       },
@@ -303,7 +309,7 @@ export class GestionServicesComponent implements OnInit {
   updateUser() {
     this.disableUpdate = true;
     this.serviceService.updateUser(this.detailUser).subscribe(() => {
-      this.getAllUsers();
+      this.getAllAdmins();
       this.checkDetailsUsers = false;
       this.disableUpdate = false;
     });

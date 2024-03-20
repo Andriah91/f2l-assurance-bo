@@ -43,6 +43,7 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { PasswordModule } from 'primeng/password';
+import { GestionAdministrateurComponent } from './pages/gestion-administrateur/gestion-administrateur.component';
 
 @NgModule({
     imports: [
@@ -91,6 +92,7 @@ import { PasswordModule } from 'primeng/password';
     declarations: [
         ManagerComponent,
         GestionPersonnelComponent,
+        GestionAdministrateurComponent,
         GestionServicesComponent,
     ],
     providers: [ConfirmationService, MessageService, NgxSpinnerService, DatePipe ],

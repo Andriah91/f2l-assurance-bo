@@ -14,7 +14,11 @@ export class ServiceService {
   constructor(private http: HttpClient, private cookieService: CookieService) {}
 
   getAllUsers(data:any): any {
-    return this.http.post(`${environment.url}/api/search`, data);
+    return this.http.post(`${environment.url}/api/searchUser`, data);
+  }
+
+  getAllAdmins(data:any): any {
+    return this.http.post(`${environment.url}/api/searchAdmin`, data);
   }
 
   getAllContrat(id: any): any {
@@ -63,7 +67,6 @@ export class ServiceService {
         const decodedToken: any = jwtDecode(token);
         return decodedToken;
       } else {
-        console.log("Token introuvable");
         return null;
       }
     } catch (error) {
@@ -85,7 +88,7 @@ export class ServiceService {
         return user;
       } else {
         console.log(
-          "Token introuvable ou données utilisateur manquantes dans le token"
+          "Token introuvable"
         );
         return null;
       }
@@ -100,6 +103,10 @@ export class ServiceService {
   }
 
   registerUser(data: any) {
+    return this.http.post<any>(`${environment.url}/api/registerClient`, data);
+  }
+
+  registerAdmin(data: any) {
     return this.http.post<any>(`${environment.url}/api/register`, data);
   }
 

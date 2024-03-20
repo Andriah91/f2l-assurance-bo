@@ -3,9 +3,8 @@
   <div class="col-12">
     <div class="card">
       <div class="container">
-        <h5 class="title">Liste Contrats de {{nameUser}}</h5>
-        <p-button label="Ajouter" icon="pi pi-plus" severity="success" (click)="showModalCreateContact()"></p-button>
-      </div>
+        <h5 class="title" style="margin-bottom: 10px;">Liste Contrats de {{nameUser}}</h5>
+          </div>
       <p-toast></p-toast>
       <p-confirmDialog  key="positionDialog"></p-confirmDialog>
       <ngx-spinner [name]="'deleteuser'" bdColor="rgba(0, 0, 0, 0.8)" size="default" color="#fff" type="line-scale"
@@ -59,7 +58,7 @@
         <ng-template pTemplate="body" let-doc>
           <tr>
             <td></td>
-            <td><a href="#" (click)="openUrl(doc.path)">{{ doc.titre }}</a></td>
+            <td><a href="#" (click)="openUrl($event,doc.path)">{{ doc.titre }}</a></td>
 
 
             <td>{{doc.type}}</td>
@@ -74,7 +73,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="6">No documents.</td>
+            <td colspan="6">Aucun documents.</td>
           </tr>
         </ng-template>
       </p-table>
@@ -109,7 +108,7 @@
   </div>
 </div>
 
-<p-dialog header="Header" [(visible)]="ajouterDoc" [modal]="true" [style]="{ width: '40vw' }" [draggable]="false"
+<p-dialog header="Ajout de nouveau(x) document(s)" [(visible)]="ajouterDoc" [modal]="true" [style]="{ width: '40vw' }" [draggable]="false"
   [resizable]="false">
   <h5>Titre du document</h5>
   <input type="text" pInputText [(ngModel)]="titre">
@@ -126,7 +125,7 @@
   </p-fileUpload>
 </p-dialog>
 
-<p-dialog [(visible)]="detailsContrat" header="A propos du contrat N° {{bodyContrat.id}}" [modal]="true"
+<p-dialog [(visible)]="detailsContrat" header="A propos du contrat {{bodyContrat.title}}" [modal]="true"
   [style]="{width:'40%'}" position="top">
   <ng-template pTemplate="content">
     <div class="col-12 md:col-12">
@@ -140,10 +139,10 @@
           <input pInputText id="Date de création" type="date" [(ngModel)]="bodyContrat.creation_date" />
         </div>
       </div>
-      <div>
+      <!-- <div>
         <h5>Utilisateur</h5>
         <input type="text" pInputText [(ngModel)]="bodyContrat.user_id">
-      </div>
+      </div> -->
       <br>
     </div>
   </ng-template>

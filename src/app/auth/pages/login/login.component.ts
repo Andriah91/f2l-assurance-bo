@@ -95,6 +95,7 @@ export class LoginComponent implements OnInit {
     }
 
     login() {
+        this.errorMessage="";
         if (!this.isValidEmail(this.username)) {
             this.errorMessage = "Format d'e-mail invalide";
             return;

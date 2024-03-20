@@ -59,6 +59,8 @@ export class TopBarComponent implements OnInit {
       acceptIcon: "none",
       rejectIcon: "none",
       rejectButtonStyleClass: "p-button-text",
+      acceptLabel: "Oui", 
+      rejectLabel: "Non",
       accept: () => {
         this.logoutCurrentUser();
       },
@@ -74,7 +76,7 @@ export class TopBarComponent implements OnInit {
     this.service.logout().subscribe(
       (data) => {
         console.log("Déconnexion réussie");
-        this.cookieService.delete('sessionUser');
+        this.cookieService.delete('sessionUser','/');
         this.router.navigate(['/auth/login']);
       },
       (error) => {

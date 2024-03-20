@@ -65,6 +65,8 @@ export class GestionPersonnelComponent implements OnInit {
       rejectButtonStyleClass: "p-button-text p-button-text",
       acceptIcon: "none",
       rejectIcon: "none",
+      acceptLabel: "Oui", 
+      rejectLabel: "Non",
 
       accept: () => {
         this.serviceService.deletedoc(id).subscribe(() => {
@@ -77,11 +79,7 @@ export class GestionPersonnelComponent implements OnInit {
         });
       },
       reject: () => {
-        this.messageService.add({
-          severity: "error",
-          summary: "Rejeté",
-          detail: "Action annulé",
-        });
+      
       },
     });
   }
@@ -111,7 +109,8 @@ export class GestionPersonnelComponent implements OnInit {
     });
   }
 
-  openUrl(url: string) {
+  openUrl(event: MouseEvent,url: string) {
+    event.preventDefault(); 
     window.open(this.pathUrl + url, "_blank");
   }
 
@@ -156,11 +155,7 @@ export class GestionPersonnelComponent implements OnInit {
         });
       },
       reject: () => {
-        this.messageService.add({
-          severity: "error",
-          summary: "Rejeté",
-          detail: "Action annulé",
-        });
+       
       },
     });
   }

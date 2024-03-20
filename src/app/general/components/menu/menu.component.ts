@@ -19,14 +19,20 @@ export class MenuComponent implements OnInit {
     let data = {};
 
     const menuManager = {
-      label: "Manager",
+      label: "",
       items: [
         {
-          label: "Gestion Utilisateur",
+          label: "Gestion client",
           icon: "pi pi-fw pi-user",
           routerLink: ["/manager/utilsateur"],
+        },
+        {
+          label: "Gestion administrateur",
+          icon: "pi pi-fw pi-user",
+          routerLink: ["/manager/administrateur"],
         }
       ],
+      
     };
 
     this.typeMenu == "manager";
