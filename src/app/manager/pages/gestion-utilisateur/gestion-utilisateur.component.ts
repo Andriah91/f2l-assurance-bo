@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { environment } from "src/environments/environment";
-import { ConfirmationService, MessageService } from "primeng/api";
+import { ConfirmationService, MessageService, PrimeNGConfig } from "primeng/api";
 import { ServiceService } from "../../services/service.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import { DatePipe } from "@angular/common";
@@ -71,11 +71,20 @@ export class GestionServicesComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private datePipe: DatePipe,
     private router: Router,
+    private primengConfig: PrimeNGConfig
   ) {}
 
   ngOnInit() {
     this.environments = environment;
     this.getAllUsers();
+
+    this.primengConfig.setTranslation({
+      monthNames: [
+        'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+        'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+      ],
+      dayNamesMin: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
+    });
   }
 
   openAddContrat(id: any) {
@@ -171,7 +180,7 @@ export class GestionServicesComponent implements OnInit {
       });
       return;
     }
-    this.userBody.phone="+261"+this.userBody.phone;
+    this.userBody.phone="+33"+this.userBody.phone;
 
     this.serviceService.registerUser(this.userBody).subscribe(
       (response: any) => {
@@ -247,24 +256,30 @@ export class GestionServicesComponent implements OnInit {
   }
 
   getAllUsers() {
-    const body = {
-      key: this.keyWord,
-      offset: this.offset,
-      limit: this.limit
+    try {
+      const body = {
+        key: this.keyWord,
+        offset: this.offset,
+        limit: this.limit
+      };
+  
+      this.serviceService.getAllUsers(body).subscribe((data: any) => {
+        this.users = data.users;
+        this.totalPages = data.userCount;
+        this.getPageNumbers();
+        this.skeleton = false;
+      });
+    } catch (error) {
+      console.error('Une erreur est survenue ', error);
     }
-    this.serviceService.getAllUsers(body).subscribe((data: any) => {
-      this.users = data.users;
-      this.totalPages=data.userCount;
-      this.getPageNumbers();
-      this.skeleton = false;
-    });
   }
+  
 
   getDEtailsUsers(id: any) {
     this.checkDetailsUsers = true;
     this.serviceService.getDetailsUsers(id).subscribe((data: any) => {
       this.detailUser = data.user;
-      this.detailUser.phone= this.detailUser.phone.slice(4);
+      this.detailUser.phone= this.detailUser.phone.slice(3);
       console.log(this.detailUser);
     });
   }
@@ -302,6 +317,8 @@ export class GestionServicesComponent implements OnInit {
 
   updateUser() {
     this.disableUpdate = true;
+    this.detailUser.phone="+33"+this.detailUser.phone;
+
     this.serviceService.updateUser(this.detailUser).subscribe(() => {
       this.getAllUsers();
       this.checkDetailsUsers = false;

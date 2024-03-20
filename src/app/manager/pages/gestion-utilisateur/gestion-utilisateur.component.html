@@ -66,23 +66,23 @@
                 <p-table [value]="c.contrats" dataKey="_id" responsiveLayout="scroll">
                   <ng-template pTemplate="header">
           <tr>
-            <th pSortableColumn="contrat.title">Titre <p-sortIcon field="contrat.title"></p-sortIcon></th>
+            <th pSortableColumn="contrat.title">Titre</th>
             <th>Date de création</th>
-            <th></th>
-            <th>
-              <p-button icon="pi pi-plus" [rounded]="true" [text]="true" (click)="openAddContrat(c.id)"></p-button>
-            </th>
+            <th><p-button icon="pi pi-plus" [rounded]="true" [text]="true" (click)="openAddContrat(c.id)"></p-button></th>
+           
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-contrat>
           <tr>
             <td>{{contrat.title}}</td>
-            <td>{{contrat.creation_date}}</td>
+            <td>{{ contrat.creation_date | date: 'dd-MM-yyyy' }}</td>
+
             <td>
               <div class="flex">
                 <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
                   (click)="deleteContrat(contrat.id, $event)"></p-button>
               </div>
+            </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
@@ -231,6 +231,9 @@
         <h5 htmlFor="Date de création">Date de création</h5>
         <p-calendar [inline]="true" [(ngModel)]="contratBody.creation_date" [iconDisplay]="'input'" [showIcon]="true"
           [dateFormat]="'dd/mm/yy'"></p-calendar>
+
+          
+        
       </div>
       <br>
     </div>

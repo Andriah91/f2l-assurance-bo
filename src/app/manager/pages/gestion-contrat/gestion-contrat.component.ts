@@ -1,8 +1,15 @@
 import { Component, OnInit } from "@angular/core";
-import { ConfirmationService, MessageService } from "primeng/api";
+import { ConfirmationService, MessageService, PrimeNGConfig } from "primeng/api";
 import { ServiceService } from "../../services/service.service";
 import { environment } from "src/environments/environment";
 import { DatePipe } from "@angular/common";
+import { CalendarModule } from 'primeng/calendar';
+
+
+interface UploadEvent {
+  originalEvent: Event;
+  files: File[];
+}
 
 @Component({
   selector: "app-gestion-contrat",
@@ -22,7 +29,7 @@ export class GestionPersonnelComponent implements OnInit {
   contratList: any[] = [];
   ajouterDoc: boolean = false;
   uploadedFiles: any[] = [];
-  f: any;
+  f: any[] = [];
   detailsContrat: boolean = false;
   bodyContrat = {
     id: "",
@@ -48,11 +55,15 @@ export class GestionPersonnelComponent implements OnInit {
     this.pathUrl = environment.PATH_URL;
   }
 
+  
+
   ngOnInit() {
     this.environments = environment;
     this.idUser = parseInt(localStorage.getItem('userId'));
     this.nameUser = localStorage.getItem('clientId');
     this.getAllContrat();
+
+  
   }
 
   deleteDocument(id: any, event: Event) {
@@ -117,7 +128,6 @@ export class GestionPersonnelComponent implements OnInit {
   showDetailsContrat(data: any) {
     this.bodyContrat = data;
     this.detailsContrat = true;
-    //
   }
 
   updateContrat() {
@@ -160,8 +170,23 @@ export class GestionPersonnelComponent implements OnInit {
     });
   }
 
-  getFileUpload(event: any) {
-    this.f = event.currentFiles;
+  getFileUpload(event:UploadEvent) {
+    console.log(event, 'event');
+    
+    for(let file of event.files) {
+        this.f.push(file);
+    }
+}
+
+  //getFileUpload(event: any) {
+    //this.f = event.currentFiles;
+  //}
+
+  removeFile(file: any) {
+    const index = this.f.indexOf(file);
+    if (index !== -1) {
+      this.f.splice(index, 1);
+    }
   }
 
   getFilePath(file: string) {
@@ -173,6 +198,7 @@ export class GestionPersonnelComponent implements OnInit {
 
   openModal(id: any) {
     this.idContrat = id;
+    this.titre = "";
     this.ajouterDoc = true;
   }
 
@@ -197,6 +223,7 @@ export class GestionPersonnelComponent implements OnInit {
             this.serviceService.createDocument(body).subscribe({});
           }
           this.getAllContrat();
+          this.f = [];
           this.ajouterDoc = false;
           this.messageService.add({
             severity: "success",
