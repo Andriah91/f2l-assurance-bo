@@ -153,6 +153,8 @@ export class GestionPersonnelComponent implements OnInit {
       rejectButtonStyleClass: "p-button-text p-button-text",
       acceptIcon: "none",
       rejectIcon: "none",
+      acceptLabel: "Oui", 
+      rejectLabel: "Non",
 
       accept: () => {
         this.serviceService.deleteContrat(id).subscribe(() => {
@@ -171,8 +173,6 @@ export class GestionPersonnelComponent implements OnInit {
   }
 
   getFileUpload(event:UploadEvent) {
-    console.log(event, 'event');
-    
     for(let file of event.files) {
         this.f.push(file);
     }
@@ -203,12 +203,19 @@ export class GestionPersonnelComponent implements OnInit {
   }
 
   onUpload() {
+    if (this.titre === "" || this.f.length === 0) {
+      this.messageService.add({
+        severity: "error",
+            summary: "",
+            detail: "Champ titre ou fichier manquant",
+      });
+      return;
+    }
     const uploadData = new FormData();
     for (let i = 0; i < this.f.length; i++) {
       uploadData.append("fichier[]", this.f[i], this.f[i].name);
     }
 
-    console.log(uploadData, "this.uploadedFiles");
     this.serviceService.upload(uploadData).subscribe(
       (data) => {
         if (data.message === "success") {

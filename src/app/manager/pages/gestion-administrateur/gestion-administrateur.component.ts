@@ -21,7 +21,7 @@ export class GestionAdministrateurComponent implements OnInit {
   checkDetailsUsers: boolean = false;
 
   keyWord : string="";
-  dataNumberShow: number= 2;
+  dataNumberShow: number= 10;
   offset:number=0;
   limit:number= this.dataNumberShow;
   currentPage=1;

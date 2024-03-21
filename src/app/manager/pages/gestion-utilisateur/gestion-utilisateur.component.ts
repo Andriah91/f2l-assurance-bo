@@ -21,7 +21,7 @@ export class GestionServicesComponent implements OnInit {
   checkDetailsUsers: boolean = false;
 
   keyWord : string="";
-  dataNumberShow: number= 2;
+  dataNumberShow: number= 10;
   offset:number=0;
   limit:number= this.dataNumberShow;
   currentPage=1;
@@ -162,17 +162,22 @@ export class GestionServicesComponent implements OnInit {
     });
   }
 
-   isValidPhoneNumber(numero: string): boolean {
-    const regex = /^\d{9}$/;
+   isValidPhoneNumber9(numero: string): boolean {
+        const regex = /^\d{9}$/;
     return regex.test(numero);
   }
+  isValidPhoneNumber10(numero: string): boolean {
+    const regex = /^0\d{8}$|^0\d{9}$/;
+    return regex.test(numero);
+  }
+
   isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 }
 
   createUser() {
-    if ((!this.isValidPhoneNumber(this.userBody.phone))||(!this.isValidEmail(this.userBody.email))) {
+    if ((!this.isValidPhoneNumber9(this.userBody.phone) && !this.isValidPhoneNumber10(this.userBody.phone)) || !this.isValidEmail(this.userBody.email)) {
       this.messageService.add({
         severity: "error",
         summary: "Erreur",
@@ -180,7 +185,6 @@ export class GestionServicesComponent implements OnInit {
       });
       return;
     }
-    this.userBody.phone="+33"+this.userBody.phone;
 
     this.serviceService.registerUser(this.userBody).subscribe(
       (response: any) => {
@@ -279,7 +283,6 @@ export class GestionServicesComponent implements OnInit {
     this.checkDetailsUsers = true;
     this.serviceService.getDetailsUsers(id).subscribe((data: any) => {
       this.detailUser = data.user;
-      this.detailUser.phone= this.detailUser.phone.slice(3);
       console.log(this.detailUser);
     });
   }
@@ -316,8 +319,15 @@ export class GestionServicesComponent implements OnInit {
   }
 
   updateUser() {
+    if ((!this.isValidPhoneNumber9(this.detailUser.phone) && !this.isValidPhoneNumber10(this.detailUser.phone)) || !this.isValidEmail(this.detailUser.email)) {
+      this.messageService.add({
+        severity: "error",
+        summary: "Erreur",
+        detail: "Format de numéro de téléphone ou email invalide",
+      });
+      return;
+    }
     this.disableUpdate = true;
-    this.detailUser.phone="+33"+this.detailUser.phone;
 
     this.serviceService.updateUser(this.detailUser).subscribe(() => {
       this.getAllUsers();
