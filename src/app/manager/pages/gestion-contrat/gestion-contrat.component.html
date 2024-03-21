@@ -116,8 +116,17 @@
   <p-fileUpload [showUploadButton]="false" cancelLabel="Annuler" chooseLabel="Choisir un fichier" name="demo[]"
     (onSelect)="getFileUpload($event)" (onUpload)="onUpload()" [multiple]="true" accept="image/*,application/pdf"
     maxFileSize="1000000">
+    <ng-template let-mail pTemplate="file"></ng-template>
     <ng-template pTemplate="content">
-
+      <div class="grid" *ngFor="let file of f">
+        <div class="col-1"></div>
+        <div class="col-9">
+            <li>{{ file.name }} - {{ file.size }} bytes</li>
+        </div>
+        <div class="col-2">
+          <i class="pi pi-times" (click)="removeFile(file)"></i>
+        </div>
+      </div>
       <div class="text-center">
         <p-button icon="pi pi-check" label="Upload" (click)="onUpload()" severity="info"></p-button>
       </div>
@@ -163,7 +172,9 @@
         </div>
         <div class="field col">
           <h5 htmlFor="Date de création">Date de création</h5>
-          <input pInputText id="Date de création" type="date" [(ngModel)]="create.creation_date" />
+          <!-- <input pInputText id="Date de création" type="date" [(ngModel)]="create.creation_date" /> -->
+          <p-calendar [(ngModel)]="create.creation_date" dateFormat="dd/mm/yy"></p-calendar>
+
         </div>
       </div>
       <div>
