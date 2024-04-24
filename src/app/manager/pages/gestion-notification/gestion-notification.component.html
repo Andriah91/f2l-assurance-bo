@@ -2,12 +2,12 @@
  
   <div class="col-12">
     <div class="card">
-      <h5 class="title">Liste des administrateurs</h5>
+      <h5 class="title">Liste des notifications</h5>
       <br>
       <div class="container">
         <div class="title">
           <app-search
-          (searchs)="searchAdmins($event)"
+          (searchs)="searchNotifications($event)"
           [keyword]="keyWord"
           ></app-search>
         </div>
@@ -20,28 +20,24 @@
       [fullScreen]="true">
       <p style="color: white"> Chargement... </p>
     </ngx-spinner>
-      <p-table [value]="users" dataKey="first_name" [expandedRowKeys]="expandedRows" responsiveLayout="scroll">
+      <p-table [value]="notifs" dataKey="first_name" [expandedRowKeys]="expandedRows" responsiveLayout="scroll">
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 22%;">Nom</th>
-            <th style="width: 19%;">Prénom(s)</th>
-            <th style="width: 20%;">Email</th>
+            <th style="width: 15%;">Titre </th>
+            <th style="width: 30%;">Message</th>
             <th style="width: 7%;"></th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-user let-expanded="expanded">
+        <ng-template pTemplate="body" let-notif let-expanded="expanded">
           <tr>
           
-            <td style="min-width: 12rem;">{{user.first_name}}</td>
-            <td>{{user.last_name}}</td>
-            <td style="min-width: 8rem;">{{user.email}}</td>
-           
+            <td><a href="#" (click)="openUrl($event,notif.path)">{{ notif.title }}</a></td>
+            <td>{{notif.message}}</td>
+          
             <td>
               <div class="flex">
-                <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info mr-2"
-                  (click)="getDEtailsUsers(user.id)"></button>
                 <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
-                  (click)="deleteUser(user.id, $event)"></button>
+                  (click)="deleteNotification(notif.id, $event)"></button>
               </div>
             </td>
           </tr>
@@ -69,7 +65,7 @@
     </ng-template>
     </p-table>
     <br>
-    <app-pagination *ngIf="users.length"
+    <app-pagination *ngIf="notifs.length"
     [dataNumberShow]="dataNumberShow"
     [offset]="offset"
     [limit]="limit"
@@ -136,45 +132,43 @@
   </ng-template>
 </p-dialog>
 
-<p-dialog [(visible)]="modalCreateUser" header="Nouveau" [modal]="true" [style]="{width:'40%'}" position="top">
+<p-dialog [(visible)]="modalCreateUser" header="Nouvelle notification" [modal]="true" [style]="{width:'40%'}" position="top">
   <ng-template pTemplate="content">
     <div class="col-12 md:col-12">
-      <div class="p-formgrid grid">
-        <div class="field col">
-          <h5 htmlFor="Nom">Nom</h5>
-          <input pInputText id="Nom" type="text" [(ngModel)]="userBody.first_name" placeholder="Nom" />
-        </div>
-        <div class="field col">
-          <h5 htmlFor="Prénom(s)">Prénom(s)</h5>
-          <input pInputText id="Prénom(s)" type="text" [(ngModel)]="userBody.last_name" placeholder="Prénom" />
-        </div>
-      </div>
+    
       <div>
-        <!-- <h5>N° enregistrement</h5>
-        <input type="text" pInputText [(ngModel)]="userBody.registration_number" placeholder="1234567"> -->
-        <h5>Email</h5>
-        <input type="text" pInputText [(ngModel)]="userBody.email" placeholder="exemple@gmail.com">
-        <h5>Mot de passe</h5>
-        <p-password [(ngModel)]="userBody.password" [toggleMask]="true" [feedback]="false"></p-password>
-        <h5>Confirmer le mot de passe</h5>
-        <input type="password" pInputText [(ngModel)]="userBody.confirmPassword"
-          placeholder="Confirmer le mot de passe">
-        <!-- <h5>Rôle</h5>
-        <p-dropdown [options]="isAdmin" [(ngModel)]="userBody.is_admin" optionLabel="name" [showClear]="true"
-          placeholder="Admin / Client"></p-dropdown> -->
-        <!-- <h5>Numéro</h5>
-        <input type="text" pInputText placeholder="+261 34 xx xxx xx" [(ngModel)]="userBody.phone"> -->
+        <h5>Titre du notification</h5>
+        <input type="text" pInputText [(ngModel)]="notifBody.title" >
+        <h5>Message</h5>
+        <textarea rows="5" cols="30" pInputTextarea [(ngModel)]="notifBody.message"></textarea>
+       
+          <br>
+          <p-fileUpload [showUploadButton]="false" cancelLabel="Annuler" chooseLabel="Choisir un fichier" name="demo[]"
+            (onSelect)="getFileUpload($event)" (onUpload)="onUpload()" [multiple]="true" accept="image/*"
+          >
+            <ng-template let-mail pTemplate="file"></ng-template>
+            <ng-template pTemplate="content">
+              <div class="grid" *ngFor="let file of f">
+                <div class="col-1"></div>
+                <div class="col-9">
+                    <li>{{ file.name }} - {{ file.size }} bytes</li>
+                </div>
+                <div class="col-2">
+                  <i class="pi pi-times" (click)="removeFile(file)"></i>
+                </div>
+              </div>
+              <div class="text-center">
+                <p-button icon="pi pi-check" label="Upload" (click)="onUpload()" severity="info"></p-button>
+              </div>
+            </ng-template>
+          </p-fileUpload>
       </div>
       <br>
-      <!-- <div class="text-center">
-        <h5>Valider / Desactiver</h5>
-        <p-inputSwitch [ngModel]="checked" (ngModelChange)="oneCheckValid($event)"></p-inputSwitch>
-      </div> -->
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
-    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Ajouter" (click)="createUser()"
-      [disabled]="disableUpdate"></button>
+    <!-- <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Ajouter" (click)="createNotification()"
+      [disabled]="disableUpdate"></button> -->
   </ng-template>
 </p-dialog>
 

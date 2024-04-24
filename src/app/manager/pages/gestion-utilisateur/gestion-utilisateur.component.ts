@@ -5,6 +5,7 @@ import { ServiceService } from "../../services/service.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import { DatePipe } from "@angular/common";
 import { Router } from "@angular/router";
+import { AlertService } from "../../services/alert.service";
 interface expandedRows {
   [key: string]: boolean;
 }
@@ -71,7 +72,8 @@ export class GestionServicesComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private datePipe: DatePipe,
     private router: Router,
-    private primengConfig: PrimeNGConfig
+    private primengConfig: PrimeNGConfig,
+    private statusService : AlertService
   ) {}
 
   ngOnInit() {
@@ -113,13 +115,9 @@ export class GestionServicesComponent implements OnInit {
     }
     const formattedDate = this.datePipe.transform(this.contratBody.creation_date, 'yyyy-MM-dd');
     this.contratBody.creation_date = formattedDate;
-
+    this.spinner.show("spinnerLoader");
     this.serviceService.registerContrat(this.contratBody).subscribe(() => {
-      this.messageService.add({
-        severity: "success",
-        summary: "Enregistré",
-        detail: "Contrat créé avec success",
-      });
+     
       this.getAllUsers();
       this.contratBody = {
         title: "",
@@ -127,7 +125,20 @@ export class GestionServicesComponent implements OnInit {
         user_id: "",
       };
       this.addContrat = false;
-    });
+      this.messageService.add({
+        severity: "success",
+        summary: "Enregistré",
+        detail: "Contrat créé avec success",
+      });
+      this.spinner.hide("spinnerLoader");
+    },
+    (error) => {
+      let status = this.statusService.getStatus();
+      this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+      this.spinner.hide("spinnerLoader");
+      return;
+    }
+    );
   }
 
   deleteContrat(id: any, event: Event) {
@@ -142,9 +153,9 @@ export class GestionServicesComponent implements OnInit {
       rejectIcon: "none",
       acceptLabel: "Oui", 
       rejectLabel: "Non",
-
+     
       accept: () => {
-        this.spinner.show("deletecontrat");
+        this.spinner.show("spinnerLoader");
         this.serviceService.deleteContrat(id).subscribe(() => {
           this.messageService.add({
             severity: "info",
@@ -152,8 +163,14 @@ export class GestionServicesComponent implements OnInit {
             detail: "Contrat supprimé",
           });
           this.getAllUsers();
-          this.spinner.hide("deletecontrat");
-        });
+          this.spinner.hide("spinnerLoader");
+        },
+        (error) => {
+          let status = this.statusService.getStatus();
+          this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+          return;
+        }
+        );
       },
       reject: () => {
     
@@ -162,7 +179,7 @@ export class GestionServicesComponent implements OnInit {
     });
   }
 
-   isValidPhoneNumber9(numero: string): boolean {
+  isValidPhoneNumber9(numero: string): boolean {
         const regex = /^\d{9}$/;
     return regex.test(numero);
   }
@@ -185,9 +202,9 @@ export class GestionServicesComponent implements OnInit {
       });
       return;
     }
-
+    this.spinner.show("spinnerLoader");
     this.serviceService.registerUser(this.userBody).subscribe(
-      (response: any) => {
+      () => {
         this.messageService.add({
           severity: "success",
           summary: "Enregistré",
@@ -196,13 +213,13 @@ export class GestionServicesComponent implements OnInit {
         this.getAllUsers();
         this.modalCreateUser = false;
         this.clearForm();
+        this.spinner.hide("spinnerLoader");
       },
-      (response: any) => {
-        this.messageService.add({
-          severity: "error",
-          summary: "Erreur",
-          detail: response.error.error,
-        });
+      (error) => {
+        let status = this.statusService.getStatus();
+        this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+        this.spinner.hide("spinnerLoader");
+        return;
       }
     );
    
@@ -266,15 +283,22 @@ export class GestionServicesComponent implements OnInit {
         offset: this.offset,
         limit: this.limit
       };
-  
-      this.serviceService.getAllUsers(body).subscribe((data: any) => {
-        this.users = data.users;
-        this.totalPages = data.userCount;
-        this.getPageNumbers();
-        this.skeleton = false;
-      });
+
+      this.serviceService.getAllUsers(body).subscribe(
+        (data: any) => {
+          this.users = data.users;
+          this.totalPages = data.userCount;
+          this.getPageNumbers();
+          this.skeleton = false;
+        },
+        (error) => {
+          let status = this.statusService.getStatus();
+          this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+          return;
+        }
+      );
     } catch (error) {
-      console.error('Une erreur est survenue ', error);
+        console.log(error);
     }
   }
   
@@ -301,16 +325,24 @@ export class GestionServicesComponent implements OnInit {
       rejectLabel: "Non", 
 
       accept: () => {
-        this.spinner.show("deleteuser");
-        this.serviceService.deleteUsers(id).subscribe(() => {
-          this.messageService.add({
-            severity: "info",
-            summary: "Confirmé",
-            detail: "Utilisateur supprimé",
-          });
-          this.getAllUsers();
-          this.spinner.hide("deleteuser");
-        });
+      this.spinner.show("spinnerLoader");
+      this.serviceService.deleteUsers(id).subscribe(
+            () => {
+              this.messageService.add({
+                severity: "info",
+                summary: "Confirmé",
+                detail: "Utilisateur supprimé",
+              });
+              this.getAllUsers();
+              this.spinner.hide("spinnerLoader");
+            },
+            (error) => {
+              this.spinner.hide("spinnerLoader");
+              let status = this.statusService.getStatus();
+              this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+              return;
+            }
+          );
       },
       reject: () => {
 
@@ -328,12 +360,20 @@ export class GestionServicesComponent implements OnInit {
       return;
     }
     this.disableUpdate = true;
-
+    this.spinner.show("spinnerLoader");
     this.serviceService.updateUser(this.detailUser).subscribe(() => {
       this.getAllUsers();
       this.checkDetailsUsers = false;
       this.disableUpdate = false;
-    });
+      this.spinner.hide("spinnerLoader");
+    },
+    (error) => {
+      let status = this.statusService.getStatus();
+      this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+      this.spinner.hide("spinnerLoader");
+      return;
+    }
+    );
   }
 
   hideAjoutServicePopup() {

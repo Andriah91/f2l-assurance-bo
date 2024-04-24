@@ -4,35 +4,36 @@
 <div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
   <div class="flex flex-column align-items-center justify-content-center">
     <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="square-jelly-box" [fullScreen]="false"
-      [name]="'login'">
-    </ngx-spinner>
-   
+    [name]="'login'">
+  </ngx-spinner>
+  
+  <p-toast></p-toast>
     <div
       style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
       <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius:53px">
         <div class="text-center mb-5">
          
           <div class="text-900 text-3xl font-medium mb-3">Administrateur</div>
-          <span class="text-600 font-medium">Indentifiez-vous</span>
+          <span class="text-600 font-medium">Identifiez-vous</span>
         </div>
         <div>
           <label for="email1" class="block text-900 text-xl font-medium mb-2">Email</label>
           <input [(ngModel)]="username" required="" id="email1" type="text" placeholder="Adresse email" pInputText
-            class="w-full md:w-30rem mb-5" style="padding:1rem">
+            class="w-full md:w-30rem mb-5" style="padding:1rem" (change)="disableFunction()">
 
           <label for="password1" class="block text-900 font-medium text-xl mb-2">Mot de passe</label>
           <!-- <p-password id="password1" [(ngModel)]="password" required="" placeholder="Mot de passe" [toggleMask]="true"
             styleClass="mb-5" inputStyleClass="w-full p-3 md:w-30rem"></p-password> -->
 
-            <input [(ngModel)]="password" required="" type="password" placeholder="Mot de passe" pInputText 
+            <input (change)="disableFunction()" [(ngModel)]="password" required="" type="password" placeholder="Mot de passe" pInputText 
             class="w-full md:w-30rem mb-5" style="padding:1rem">
 
           <div class="flex align-items-center justify-content-between mb-5 gap-5">
             <div class="flex align-items-center">
             </div>
           </div>
-          <button (click)="login()" [disabled]="disabledlogin" pButton pRipple label="Se connecter"
-            class="w-full p-3 text-xl" [routerLink]="['/']"></button>
+          <button (click)="login()" [disabled]="disabledlogin" [ngClass]="{'cursor-not-allowed' : disabledlogin}" pButton pRipple label="Se connecter"
+            class="w-full p-3 text-xl" ></button>
         </div>
         <h4 style="color:red">{{errorMessage}}</h4>
         <!-- <p-messages [value]="msgs"></p-messages> -->

@@ -17,7 +17,7 @@ export class AuthInterceptor implements HttpInterceptor {
       });
       return next.handle(authReq).pipe(
         catchError((error) => {
-          this.router.navigate(['/auth/login']);
+         // this.router.navigate(['/auth/login']);
           return throwError("Veuiller vous connecter");
         })
       );

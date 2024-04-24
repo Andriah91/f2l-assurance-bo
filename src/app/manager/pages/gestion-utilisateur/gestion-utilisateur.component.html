@@ -1,5 +1,5 @@
 <div class="grid p-fluid">
- 
+  <p-toast></p-toast>
   <div class="col-12">
     <div class="card">
       <h5 class="title">Liste des clients</h5>
@@ -16,10 +16,10 @@
       <br>
       <p-toast></p-toast>
       <p-confirmDialog key="positionDialog"></p-confirmDialog>
-      <ngx-spinner [name]="'deleteuser'" bdColor="rgba(0, 0, 0, 0.8)" size="default" color="#fff" type="line-scale"
-        [fullScreen]="false">
-        <p style="color: white"> Chargement... </p>
-      </ngx-spinner>
+      <ngx-spinner [name]="'spinnerLoader'" bdColor="rgb(0, 0, 0, 0.8)" size="medium" color="#fff" type="square-jelly-box"
+                  [fullScreen]="true">
+                  <p style="color: white"> Chargement... </p>
+                </ngx-spinner>
       <p-table [value]="users" dataKey="first_name" [expandedRowKeys]="expandedRows" responsiveLayout="scroll">
         <ng-template pTemplate="header">
           <tr>
@@ -54,7 +54,8 @@
                 <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info mr-2"
                   (click)="getDEtailsUsers(user.id)"></button>
                 <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
-                  (click)="deleteUser(user.id, $event)"></button>
+                  (click)="deleteUser(user.id, $event)">
+                </button>
               </div>
             </td>
           </tr>
@@ -66,6 +67,7 @@
                 <p-table [value]="c.contrats" dataKey="_id" responsiveLayout="scroll">
                   <ng-template pTemplate="header">
           <tr>
+            <th ></th>
             <th pSortableColumn="contrat.title">Titre</th>
             <th>Date de création</th>
             <th><p-button icon="pi pi-plus" [rounded]="true" [text]="true" (click)="openAddContrat(c.id)"></p-button></th>
@@ -74,9 +76,9 @@
         </ng-template>
         <ng-template pTemplate="body" let-contrat>
           <tr>
+            <td></td>
             <td>{{contrat.title}}</td>
             <td>{{ contrat.creation_date | date: 'dd-MM-yyyy' }}</td>
-
             <td>
               <div class="flex">
                 <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"

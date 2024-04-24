@@ -7,17 +7,18 @@
           </div>
       <p-toast></p-toast>
       <p-confirmDialog  key="positionDialog"></p-confirmDialog>
-      <ngx-spinner [name]="'deleteuser'" bdColor="rgba(0, 0, 0, 0.8)" size="default" color="#fff" type="line-scale"
-        [fullScreen]="false">
-        <p style="color: white"> Chargement... </p>
-      </ngx-spinner>
+      <ngx-spinner [name]="'spinnerLoader'" bdColor="rgb(0, 0, 0, 0.8)" size="medium" color="#fff" type="square-jelly-box"
+      [fullScreen]="true">
+      <p style="color: white"> Chargement... </p>
+    </ngx-spinner>
       <p-table [value]="contratList" dataKey="title" responsiveLayout="scroll">
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 5%"></th>
-            <th style="width: 22%;">Titre</th>
-            <th style="width: 19%;">Date de création</th>
-            <th style="width: 7%;"></th>
+            <th></th>
+            <th pSortableColumn="contrat.title">Titre</th>
+            <th>Date de création</th>
+            <th><p-button icon="pi pi-plus" [rounded]="true" [text]="true" (click)="openAddContrat()"></p-button></th>
+           
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-contrat let-expanded="expanded">
@@ -115,7 +116,7 @@
   <br>
   <p-fileUpload [showUploadButton]="false" cancelLabel="Annuler" chooseLabel="Choisir un fichier" name="demo[]"
     (onSelect)="getFileUpload($event)" (onUpload)="onUpload()" [multiple]="true" accept="image/*,application/pdf"
-    maxFileSize="1000000">
+   >
     <ng-template let-mail pTemplate="file"></ng-template>
     <ng-template pTemplate="content">
       <div class="grid" *ngFor="let file of f">
@@ -161,31 +162,21 @@
   </ng-template>
 </p-dialog>
 
-<p-dialog [(visible)]="checkAddContrat" header="Nouveau contrat" [modal]="true"
-  [style]="{width:'40%'}" position="top">
+<p-dialog [(visible)]="checkAddContrat" header="Nouveau contrat" [modal]="true" [draggable]="false" [resizable]="false" [style]="{width:'30%'}" position="top">
   <ng-template pTemplate="content">
     <div class="col-12 md:col-12">
-      <div class="p-formgrid grid">
-        <div class="field col">
-          <h5 htmlFor="Titre">Titre</h5>
-          <input pInputText id="Titre" type="text" [(ngModel)]="create.title" />
-        </div>
-        <div class="field col">
-          <h5 htmlFor="Date de création">Date de création</h5>
-          <!-- <input pInputText id="Date de création" type="date" [(ngModel)]="create.creation_date" /> -->
-          <p-calendar [(ngModel)]="create.creation_date" dateFormat="dd/mm/yy"></p-calendar>
-
-        </div>
-      </div>
       <div>
-        <h5>Utilisateur</h5>
-        <input type="text" pInputText [(ngModel)]="create.user_id">
+        <h5 htmlFor="Nom">Titre</h5>
+        <input pInputText id="Nom" type="text" [(ngModel)]="contratBody.title" placeholder="Titre" />
+        <h5 htmlFor="Date de création">Date de création</h5>
+        <p-calendar [inline]="true" [(ngModel)]="contratBody.creation_date" [iconDisplay]="'input'" [showIcon]="true"
+          [dateFormat]="'dd/mm/yy'"></p-calendar>
       </div>
       <br>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
-    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Modifier" (click)="updateContrat()"
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Ajouter" (click)="createContrat()"
       [disabled]="disableUpdate"></button>
   </ng-template>
 </p-dialog>
