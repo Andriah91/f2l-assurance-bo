@@ -21,6 +21,10 @@ export class ServiceService {
     return this.http.post(`${environment.url}/api/searchAdmin`, data);
   }
 
+  getAllNotifications(data:any): any {
+    return this.http.post(`${environment.url}/api/searchNotif`, data);
+  }
+
   getAllContrat(id: any): any {
     return this.http.get(`${environment.url}/api/contrats/${id}`, id);
   }
@@ -124,5 +128,17 @@ export class ServiceService {
 
   deletedoc(id: any) {
     return this.http.delete(`${environment.url}/api/documents/${id}`, id);
+  }
+
+  registerNotification(data: any) {
+    return this.http.post<any>(`${environment.url}/api/notifications`, data);
+  }
+
+  deleteNotification(id: any) {
+    return this.http.delete(`${environment.url}/api/notifications/${id}`, id);
+  }
+
+  updateNotification(data: any) {
+    return this.http.post(`${environment.url}/api/notifications/info`, data);
   }
 }

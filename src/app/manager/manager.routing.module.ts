@@ -1,3 +1,5 @@
+import {  GestionNotificationComponent } from './pages/gestion-notification/gestion-notification.component';
+
 import { Routes, RouterModule } from "@angular/router";
 import { ManagerComponent } from "./manager.component";
 import { GestionPersonnelComponent } from "./pages/gestion-contrat/gestion-contrat.component";
@@ -11,16 +13,20 @@ const routes: Routes = [
     component: ManagerComponent,
     children: [
       {
-        path: "contrat", // child route path
-        component: GestionPersonnelComponent, // child route component that the router renders
+        path: "contrat", 
+        component: GestionPersonnelComponent, 
       },
       {
-        path: "utilsateur", // child route path
-        component: GestionServicesComponent, // child route component that the router renders
+        path: "notification",
+        component: GestionNotificationComponent,
       },
       {
-        path: "administrateur", // child route path
-        component: GestionAdministrateurComponent, // child route component that the router renders
+        path: "utilsateur", 
+        component: GestionServicesComponent,
+      },
+      {
+        path: "administrateur", 
+        component: GestionAdministrateurComponent,
       },
       {
         path: "",

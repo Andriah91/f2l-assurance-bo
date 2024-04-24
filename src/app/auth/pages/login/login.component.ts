@@ -5,11 +5,14 @@ import { Message, MessageService } from 'primeng/api';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { LayoutService } from 'src/app/general/service/app.layout.service';
 import { ServiceService } from 'src/app/manager/services/service.service';
+import { AlertService } from 'src/app/manager/services/alert.service';
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
     styles: [
-        `
+        `.custom-class {
+            cursor: not-allowed;
+        }
             :host ::ng-deep .pi-eye,
             :host ::ng-deep .pi-eye-slash {
                 transform: scale(1.6);
@@ -38,13 +41,12 @@ export class LoginComponent implements OnInit {
         private authService: AuthService,
         private spinner: NgxSpinnerService,
         public layoutService: LayoutService,
-        private service: ServiceService
+        private service: ServiceService,
+        private statusService : AlertService
     ) {}
 
     ngOnInit() {
-        this.token = localStorage.getItem('token');
-        this.url = sessionStorage.getItem('url');
-        this.checkSessionTimeout();
+        this.disableFunction();
     }
 
     startSessionTimeout() {
@@ -94,22 +96,37 @@ export class LoginComponent implements OnInit {
         );
     }
 
+    disableFunction() {
+        if ((this.username === "") || this.password === "") {
+            this.disabledlogin = true;
+        } else {
+            this.disabledlogin = false;
+        }
+    }
+
     login() {
+        this.spinner.show("login");
         this.errorMessage="";
+
         if (!this.isValidEmail(this.username)) {
+            this.spinner.hide("login");
             this.errorMessage = "Format d'e-mail invalide";
             return;
         }
+        
         this.errorMessage = null;
         this.service.login(this.username, this.password).subscribe(
             (user) => {
-                localStorage.setItem('token', user.token);
-                console.log('login successful');
-                this.router.navigate(['/']);
+                // localStorage.setItem('token', user.token);
+                // console.log('login successful');
+                this.spinner.hide("login");
+                 this.router.navigate(['/']);
             },
             (error: any) => {
-                console.log('login error');
-                this.errorMessage = error.error.message;
+                let status = this.statusService.getStatus();
+                this.spinner.hide("login");
+                this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+               
             }
         );
     }

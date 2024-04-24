@@ -4,6 +4,8 @@ import { ServiceService } from "../../services/service.service";
 import { environment } from "src/environments/environment";
 import { DatePipe } from "@angular/common";
 import { CalendarModule } from 'primeng/calendar';
+import { AlertService } from "../../services/alert.service";
+import { NgxSpinnerService } from "ngx-spinner";
 
 
 interface UploadEvent {
@@ -43,27 +45,31 @@ export class GestionPersonnelComponent implements OnInit {
     creation_date: "",
     user_id: "",
   }
-  idUser: number = 1;
+
+  contratBody = {
+    title: "",
+    creation_date:"",
+    user_id: "",
+  };
+  idUser: any ;
   nameUser: string = "";
 
   constructor(
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private serviceService: ServiceService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private statusService : AlertService,
+    private spinner: NgxSpinnerService,
   ) {
     this.pathUrl = environment.PATH_URL;
   }
 
-  
-
   ngOnInit() {
     this.environments = environment;
-    this.idUser = parseInt(localStorage.getItem('userId'));
+    this.idUser = localStorage.getItem('userId');
     this.nameUser = localStorage.getItem('clientId');
     this.getAllContrat();
-
-  
   }
 
   deleteDocument(id: any, event: Event) {
@@ -80,14 +86,22 @@ export class GestionPersonnelComponent implements OnInit {
       rejectLabel: "Non",
 
       accept: () => {
+        this.spinner.show("spinnerLoader");
         this.serviceService.deletedoc(id).subscribe(() => {
           this.messageService.add({
             severity: "info",
             summary: "Confirmé",
             detail: "Document supprimé",
           });
+          this.spinner.hide("spinnerLoader");
           this.getAllContrat();
-        });
+        },
+        (error: any) => {
+          let status = this.statusService.getStatus();
+          this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+          this.spinner.hide("spinnerLoader");
+        }
+        );
       },
       reject: () => {
       
@@ -95,22 +109,8 @@ export class GestionPersonnelComponent implements OnInit {
     });
   }
 
-  showModalCreateContact() {
+  showModalCreateContrat() {
     this.checkAddContrat = true;
-  }
-
-  createContrat() {
-    const formattedDate = this.datePipe.transform(this.create.creation_date, 'yyyy-MM-dd');
-    this.create.creation_date = formattedDate;
-    this.serviceService.registerContrat(this.create).subscribe(()=>{
-      this.messageService.add({
-        severity: "success",
-        summary: "Confirmé",
-        detail: "Contrat modifié",
-      });
-      this.getAllContrat();
-      this.checkAddContrat = false;
-    })
   }
 
   getAllContrat() {
@@ -130,17 +130,70 @@ export class GestionPersonnelComponent implements OnInit {
     this.detailsContrat = true;
   }
 
+  openAddContrat() {
+    this.contratBody = {
+      title: "",
+      creation_date: "",
+      user_id: this.idUser,
+    };
+    this.checkAddContrat = true;
+  }
+
+  createContrat() {
+    if(this.contratBody.creation_date=="" || this.contratBody.title=="")
+    {
+      this.messageService.add({
+        severity: "error",
+        summary: "",
+        detail: "Veuillez completer tous les champs",
+      });
+      return;
+    }
+    const formattedDate = this.datePipe.transform(this.contratBody.creation_date, 'yyyy-MM-dd');
+    this.contratBody.creation_date = formattedDate;
+
+    this.spinner.show("spinnerLoader");
+    this.serviceService.registerContrat(this.contratBody).subscribe(() => {
+     
+      this.getAllContrat();
+      this.contratBody = {
+        title: "",
+        creation_date: "",
+        user_id: "",
+      };
+      this.checkAddContrat = false;
+      this.spinner.hide("spinnerLoader");
+      this.messageService.add({
+        severity: "success",
+        summary: "Enregistré",
+        detail: "Contrat créé avec success",
+      });
+     
+    },  (error: any) => {
+      let status = this.statusService.getStatus();
+      this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+      this.spinner.hide("spinnerLoader");
+      }
+      );
+  }
   updateContrat() {
     this.disableUpdate = true;
+    this.spinner.show("spinnerLoader");
     this.serviceService.updateContrat(this.bodyContrat).subscribe(() => {
       this.messageService.add({
         severity: "success",
         summary: "Confirmé",
         detail: "Contrat modifié",
       });
+      this.spinner.hide("spinnerLoader");
       this.detailsContrat = false;
       this.disableUpdate = false;
-    });
+      },  (error: any) => {
+      let status = this.statusService.getStatus();
+      this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+      this.spinner.hide("spinnerLoader");
+      }
+      );
   }
 
   deleteContrats(id: any, event: Event) {
@@ -157,14 +210,22 @@ export class GestionPersonnelComponent implements OnInit {
       rejectLabel: "Non",
 
       accept: () => {
+        this.spinner.show("spinnerLoader");
         this.serviceService.deleteContrat(id).subscribe(() => {
           this.messageService.add({
             severity: "info",
             summary: "Confirmé",
             detail: "Contrat supprimé",
           });
+          this.spinner.hide("spinnerLoader");
           this.getAllContrat();
-        });
+        },
+        (error: any) => {
+          let status = this.statusService.getStatus();
+          this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+          this.spinner.hide("spinnerLoader");
+          }
+        );
       },
       reject: () => {
        
@@ -177,10 +238,6 @@ export class GestionPersonnelComponent implements OnInit {
         this.f.push(file);
     }
 }
-
-  //getFileUpload(event: any) {
-    //this.f = event.currentFiles;
-  //}
 
   removeFile(file: any) {
     const index = this.f.indexOf(file);
@@ -215,7 +272,7 @@ export class GestionPersonnelComponent implements OnInit {
     for (let i = 0; i < this.f.length; i++) {
       uploadData.append("fichier[]", this.f[i], this.f[i].name);
     }
-
+    this.spinner.show("spinnerLoader");
     this.serviceService.upload(uploadData).subscribe(
       (data) => {
         if (data.message === "success") {
@@ -227,22 +284,32 @@ export class GestionPersonnelComponent implements OnInit {
               type: this.getFileType(data.paths[index]),
               contrat_id: this.idContrat,
             };
-            this.serviceService.createDocument(body).subscribe({});
+
+            this.serviceService.createDocument(body).subscribe(
+              () => {
+                this.getAllContrat();
+                this.f = [];
+                this.ajouterDoc = false;
+                this.spinner.hide("spinnerLoader");
+                this.messageService.add({
+                  severity: "success",
+                  summary: "File Uploaded",
+                  detail: "",
+                });
+              },
+              (error) => {
+                let status = this.statusService.getStatus();
+                this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+                this.spinner.hide("spinnerLoader");
+              }
+            );
           }
-          this.getAllContrat();
-          this.f = [];
-          this.ajouterDoc = false;
-          this.messageService.add({
-            severity: "success",
-            summary: "File Uploaded",
-            detail: "",
-          });
-          
-          console.log(data.paths, "paths");
+         // console.log(data.paths, "paths");
         }
       },
       (error) => {
-        console.log(error);
+        let status = this.statusService.getStatus();
+        this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
       }
     );
   }

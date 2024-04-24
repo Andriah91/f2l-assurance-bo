@@ -5,6 +5,7 @@ import { ServiceService } from "../../services/service.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import { DatePipe } from "@angular/common";
 import { Router } from "@angular/router";
+import { AlertService } from "../../services/alert.service";
 interface expandedRows {
   [key: string]: boolean;
 }
@@ -72,6 +73,7 @@ export class GestionAdministrateurComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private datePipe: DatePipe,
     private router: Router,
+    private statusService : AlertService
   ) {}
 
   ngOnInit() {
@@ -79,79 +81,9 @@ export class GestionAdministrateurComponent implements OnInit {
     this.getAllAdmins();
   }
 
-  openAddContrat(id: any) {
-    this.contratBody = {
-      title: "",
-      creation_date: "",
-      user_id: id,
-    };
-    this.addContrat = true;
-  }
-
   showModalCreateUser() {
     this.clearForm();
     this.modalCreateUser = true;
-  }
-
-  createContrat() {
-    if(this.contratBody.creation_date=="" || this.contratBody.title=="")
-    {
-      this.messageService.add({
-        severity: "error",
-        summary: "",
-        detail: "Veuillez completer tous les champs",
-      });
-      return;
-    }
-    const formattedDate = this.datePipe.transform(this.contratBody.creation_date, 'yyyy-MM-dd');
-    this.contratBody.creation_date = formattedDate;
-
-    this.serviceService.registerContrat(this.contratBody).subscribe(() => {
-      this.messageService.add({
-        severity: "success",
-        summary: "Enregistré",
-        detail: "Contrat créé avec success",
-      });
-      this.getAllAdmins();
-      this.contratBody = {
-        title: "",
-        creation_date: "",
-        user_id: "",
-      };
-      this.addContrat = false;
-    });
-  }
-
-  deleteContrat(id: any, event: Event) {
-    this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: "Etes vous sur de supprimer ce contrat?",
-      header: "Confirmation",
-      icon: "pi pi-info-circle",
-      acceptButtonStyleClass: "p-button-danger p-button-text",
-      rejectButtonStyleClass: "p-button-text p-button-text",
-      acceptIcon: "none",
-      rejectIcon: "none",
-      acceptLabel: "Oui", 
-      rejectLabel: "Non", // Modi
-
-      accept: () => {
-        this.spinner.show("deletecontrat");
-        this.serviceService.deleteContrat(id).subscribe(() => {
-          this.messageService.add({
-            severity: "info",
-            summary: "Confirmé",
-            detail: "Contrat supprimé",
-          });
-          this.getAllAdmins();
-          this.spinner.hide("deletecontrat");
-        });
-      },
-      reject: () => {
-      
-        this.spinner.hide("deletecontrat");
-      },
-    });
   }
 
   isValidEmail(email: string): boolean {
@@ -178,7 +110,7 @@ export class GestionAdministrateurComponent implements OnInit {
       });
       return;
     }
-
+    this.spinner.show("spinnerLoader");
     this.serviceService.registerAdmin(this.userBody).subscribe(
       (response: any) => {
         this.messageService.add({
@@ -189,13 +121,12 @@ export class GestionAdministrateurComponent implements OnInit {
         this.getAllAdmins();
         this.modalCreateUser = false;
         this.clearForm();
+        this.spinner.hide("spinnerLoader");
       },
-      (response: any) => {
-        this.messageService.add({
-          severity: "error",
-          summary: "Erreur",
-          detail: response.error.error,
-        });
+      (error) => {
+        let status = this.statusService.getStatus();
+        this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+        this.spinner.hide("spinnerLoader");
       }
     );
     
@@ -259,12 +190,19 @@ export class GestionAdministrateurComponent implements OnInit {
       offset: this.offset,
       limit: this.limit
     }
+    
     this.serviceService.getAllAdmins(body).subscribe((data: any) => {
+      
       this.users = data.users;
       this.totalPages=data.userCount;
       this.getPageNumbers();
       this.skeleton = false;
-    });
+    },
+    (error) => {
+      let status = this.statusService.getStatus();
+      this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+    }
+    );
   }
 
   getDEtailsUsers(id: any) {
@@ -272,7 +210,12 @@ export class GestionAdministrateurComponent implements OnInit {
     this.serviceService.getDetailsUsers(id).subscribe((data: any) => {
       this.detailUser = data.user;
       this.oneCheckValid(this.detailUser.is_valid);
-    });
+    },
+    (error)=>{
+      let status = this.statusService.getStatus();
+      this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+    }
+    );
   }
 
   deleteUser(id: any, event: Event) {
@@ -289,7 +232,7 @@ export class GestionAdministrateurComponent implements OnInit {
       rejectLabel: "Non", 
 
       accept: () => {
-        this.spinner.show("deleteuser");
+        this.spinner.show("spinnerLoader");
         this.serviceService.deleteUsers(id).subscribe(() => {
           this.messageService.add({
             severity: "info",
@@ -297,8 +240,13 @@ export class GestionAdministrateurComponent implements OnInit {
             detail: "Administrateur supprimé",
           });
           this.getAllAdmins();
-          this.spinner.hide("deleteuser");
-        });
+          this.spinner.hide("spinnerLoader");
+        },
+        (error)=>{
+          let status = this.statusService.getStatus();
+          this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+        }
+        );
       },
       reject: () => {
 
@@ -308,20 +256,22 @@ export class GestionAdministrateurComponent implements OnInit {
 
   updateUser() {
     this.disableUpdate = true;
+    this.spinner.show("spinnerLoader");
     this.serviceService.updateUser(this.detailUser).subscribe(() => {
       this.getAllAdmins();
       this.checkDetailsUsers = false;
       this.disableUpdate = false;
-    });
+      this.spinner.hide("spinnerLoader");
+    },
+    (error)=>{
+      let status = this.statusService.getStatus();
+      this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+      this.spinner.hide("spinnerLoader");
+    }
+    );
   }
 
   hideAjoutServicePopup() {
     this.checkDetailsUsers = false;
-  }
-
-  navigateContrat(id: number,clientName:string) {
-    localStorage.setItem('userId', id.toString());
-    localStorage.setItem('clientId',clientName);
-    this.router.navigate(['/manager/contrat']);
   }
 }

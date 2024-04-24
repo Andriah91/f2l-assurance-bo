@@ -1,11 +1,12 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { ConfirmationService, MenuItem } from "primeng/api";
+import { ConfirmationService, MenuItem, MessageService } from "primeng/api";
 import { LayoutService } from "../../service/app.layout.service";
 import { AuthService } from "src/app/auth/service/auth.service";
 import { Router } from "@angular/router";
 import { environment } from "src/environments/environment";
 import { ServiceService } from "src/app/manager/services/service.service";
 import { CookieService } from "ngx-cookie-service";
+import { AlertService } from "src/app/manager/services/alert.service";
 
 @Component({
   selector: "app-top-bar",
@@ -32,7 +33,8 @@ export class TopBarComponent implements OnInit {
     private cookieService: CookieService,
     public router: Router,
     private service: ServiceService,
-
+    private messageService: MessageService,
+    private statusService: AlertService,
     private confirmationService: ConfirmationService
   ) {}
   ngOnInit(): void {
@@ -80,7 +82,8 @@ export class TopBarComponent implements OnInit {
         this.router.navigate(['/auth/login']);
       },
       (error) => {
-        console.error('Erreur lors de la déconnexion :', error);
+        let status = this.statusService.getStatus();
+        this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
       }
     );
   }

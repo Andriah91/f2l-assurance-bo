@@ -23,14 +23,19 @@ export class MenuComponent implements OnInit {
       items: [
         {
           label: "Gestion client",
-          icon: "pi pi-fw pi-user",
+          icon: "pi pi-fw pi-users",
           routerLink: ["/manager/utilsateur"],
         },
         {
           label: "Gestion administrateur",
           icon: "pi pi-fw pi-user",
           routerLink: ["/manager/administrateur"],
-        }
+        },
+        {
+          label: "Gestion notification",
+          icon: "pi pi-fw pi-bell",
+          routerLink: ["/manager/notification"],
+        },
       ],
       
     };
