@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { environments } from 'src/environments/environments';
+import { Injectable } from '@angular/core'; 
 
 @Injectable({
   providedIn: 'root',
@@ -8,11 +7,5 @@ import { environments } from 'src/environments/environments';
 export class EmployeService {
   constructor(private http: HttpClient) {}
 
-  getAllEmploye(): any {
-    return this.http.get(`${environments.BASE_URL}/employe/list`);
-  }
-
-  getAllEmployeByEmploye(): any {
-    return this.http.get(`${environments.BASE_URL}/employe/list/categori`);
-  }
+   
 }
