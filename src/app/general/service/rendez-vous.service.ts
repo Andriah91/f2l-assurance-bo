@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { environments } from 'src/environments/environments';
+import { Injectable } from '@angular/core'; 
 
 @Injectable({
   providedIn: 'root',
@@ -8,7 +7,5 @@ import { environments } from 'src/environments/environments';
 export class RendezVousService {
   constructor(private http: HttpClient) {}
 
-  checkEmployeStatus(data: any): any {
-    return this.http.post(`${environments.BASE_URL}/rendezVous/verifier`, data);
-  }
+  
 }
