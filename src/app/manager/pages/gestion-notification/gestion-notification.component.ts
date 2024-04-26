@@ -93,7 +93,16 @@ export class GestionNotificationComponent implements OnInit {
 
 openUrl(event: MouseEvent,url: string) {
   event.preventDefault(); 
-  window.open(this.pathUrl + url, "_blank");
+  if(url=="path")
+    {
+      this.messageService.add({
+        severity: "error",
+            summary: "",
+            detail: "Cette notification n'a pas d'image",
+      });
+      return;
+    }
+   window.open(this.pathUrl + url, "_blank");
 }
 getFileUpload(event:UploadEvent) {
   for(let file of event.files) {
@@ -121,7 +130,7 @@ openModal(id: any) {
 }
 
 onUpload() {
-  if (this.notifBody.title === "" || this.notifBody.message === "" || this.f.length === 0) {
+  if (this.notifBody.title === "" || this.notifBody.message === "") {
     this.messageService.add({
       severity: "error",
           summary: "",
@@ -137,49 +146,81 @@ onUpload() {
     });
     return;
   }
-  const uploadData = new FormData();
-  for (let i = 0; i < this.f.length; i++) {
-    uploadData.append("fichier[]", this.f[i], this.f[i].name);
-  }
-  this.spinner.show("spinnerLoader");
-  this.serviceService.upload(uploadData).subscribe(
-    (data) => {
-      if (data.message === "success") {
-        console.log("data.paths" + data.paths);
-        for (let index = 0; index < data.paths.length; index++) {
-          var body = {
-            title: this.notifBody.title,
-            path: this.getFilePath(data.paths[index]),
-            message: this.notifBody.message,
-          };
-
-          this.serviceService.registerNotification(body).subscribe(
-            () => {
-              this.getAllNotifications();
-              this.f = [];
-              this.ajouterDoc = false;
-              this.spinner.hide("spinnerLoader");
-              this.messageService.add({
-                severity: "success",
-                summary: "Notification ajoutée",
-                detail: "",
-              });
-            },
-            (error) => {
-              let status = this.statusService.getStatus();
-              this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
-              this.spinner.hide("spinnerLoader");
-            }
-          );
-        }
-       // console.log(data.paths, "paths");
+  if(this.f.length==0)
+  {
+    var body = {
+      title: this.notifBody.title,
+      path: "path",
+      message: this.notifBody.message,
+    };
+    this.serviceService.registerNotification(body).subscribe(
+      () => {
+        this.getAllNotifications();
+        this.f = [];
+        this.ajouterDoc = false;
+        this.spinner.hide("spinnerLoader");
+        this.modalCreateUser = false;
+        this.messageService.add({
+          severity: "success",
+          summary: "Notification ajoutée",
+          detail: "",
+        });
+      },
+      (error) => {
+        let status = this.statusService.getStatus();
+        this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+        this.spinner.hide("spinnerLoader");
       }
-    },
-    (error) => {
-      let status = this.statusService.getStatus();
-      this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+    );
+  }
+  else{
+
+    const uploadData = new FormData();
+    for (let i = 0; i < this.f.length; i++) {
+      uploadData.append("fichier[]", this.f[i], this.f[i].name);
     }
-  );
+  
+    this.spinner.show("spinnerLoader");
+    this.serviceService.upload(uploadData).subscribe(
+      (data) => {
+        if (data.message === "success") {
+          for (let index = 0; index < data.paths.length; index++) {
+            var body = {
+              title: this.notifBody.title,
+              path: this.getFilePath(data.paths[index]),
+              message: this.notifBody.message,
+            };
+  
+            this.serviceService.registerNotification(body).subscribe(
+              () => {
+                this.getAllNotifications();
+                this.f = [];
+                this.ajouterDoc = false;
+                this.spinner.hide("spinnerLoader");
+                this.modalCreateUser = false;
+                this.messageService.add({
+                  severity: "success",
+                  summary: "Notification ajoutée",
+                  detail: "",
+                });
+              },
+              (error) => {
+                let status = this.statusService.getStatus();
+                this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+                this.spinner.hide("spinnerLoader");
+              }
+            );
+          }
+        }
+      },
+      (error) => {
+        let status = this.statusService.getStatus();
+        this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+      }
+    );
+  }
+
+
 }
 
 

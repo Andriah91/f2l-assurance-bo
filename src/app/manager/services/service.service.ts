@@ -130,9 +130,14 @@ export class ServiceService {
     return this.http.delete(`${environment.url}/api/documents/${id}`, id);
   }
 
+  
+  // registerNotification(data: any) {
+  //   return this.http.post<any>(`${environment.url}/api/notifications`, data);
+  // }
+
   registerNotification(data: any) {
-    return this.http.post<any>(`${environment.url}/api/notifications`, data);
-  }
+      return this.http.post<any>(`${environment.url}/api/pushNotif`, data);
+    }
 
   deleteNotification(id: any) {
     return this.http.delete(`${environment.url}/api/notifications/${id}`, id);
