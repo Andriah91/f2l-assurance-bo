@@ -307,6 +307,7 @@ export class GestionServicesComponent implements OnInit {
     this.checkDetailsUsers = true;
     this.serviceService.getDetailsUsers(id).subscribe((data: any) => {
       this.detailUser = data.user;
+      this.checked = this.detailUser.is_valid === 1
       console.log(this.detailUser);
     });
   }
