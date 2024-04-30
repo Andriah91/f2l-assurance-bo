@@ -1,4 +1,3 @@
-import { MessageService } from 'primeng/api';
 import { Component, OnInit } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
 
@@ -8,7 +7,7 @@ import { PrimeNGConfig } from 'primeng/api';
 })
 export class AppComponent implements OnInit {
 
-    constructor(private primengConfig: PrimeNGConfig,private messageService:MessageService) { }
+    constructor(private primengConfig: PrimeNGConfig) {}
 
     ngOnInit() {
         this.primengConfig.ripple = true;

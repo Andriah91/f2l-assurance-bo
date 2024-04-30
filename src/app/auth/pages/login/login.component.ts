@@ -47,12 +47,7 @@ export class LoginComponent implements OnInit {
 
     ngOnInit() {
         this.disableFunction();
-    }
-
- 
-
- 
-
+    } 
     
     disableFunction() {
         if ((this.username === "") || this.password === "") {

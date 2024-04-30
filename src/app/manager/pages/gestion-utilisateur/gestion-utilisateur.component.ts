@@ -46,6 +46,8 @@ export class GestionServicesComponent implements OnInit {
     { status: true, value: 1 },
     { status: false, value: 0 },
   ];
+
+
   checked: boolean = false;
   disableUpdate: boolean = false;
   userBody = {
@@ -300,15 +302,12 @@ export class GestionServicesComponent implements OnInit {
     } catch (error) {
         console.log(error);
     }
-  }
-  
-
+  } 
   getDEtailsUsers(id: any) {
     this.checkDetailsUsers = true;
     this.serviceService.getDetailsUsers(id).subscribe((data: any) => {
       this.detailUser = data.user;
-      this.checked = this.detailUser.is_valid === 1
-      console.log(this.detailUser);
+      this.checked = this.detailUser.is_valid === 1;
     });
   }
 

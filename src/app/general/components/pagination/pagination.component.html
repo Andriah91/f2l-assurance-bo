@@ -1,16 +1,16 @@
 
 <nav aria-label="Page navigation example">
-    <ng-container>
-        <div class="custom-paginator-5">
-          <button class="card" (click)="executerFonction(1)">Début</button>
-          <button class="card" (click)="executerFonction(currentPage - 1)">&lt;&lt;</button>
-          <ng-container *ngFor="let page of getCustomPagesArray()">
-            <span [ngClass]="{ 'selected-page': currentPage === page }" (click)="executerFonction(page)">{{ page }}</span>
-          </ng-container>
-          <button class="card" (click)="executerFonction(currentPage + 1)">&gt;&gt;</button>
-          <button class="card" (click)="executerFonction(totalPages)">Fin</button>
-        </div>
-      </ng-container>
-  </nav> 
+  <ng-container>
+      <div class="custom-paginator-5">
+        <button class="card" (click)="executerFonction(1)"><i class="pi pi-step-backward"></i></button>
+        <button class="card" (click)="executerFonction(currentPage - 1)"><i class="pi pi-chevron-left"></i></button>
+        <ng-container *ngFor="let page of getCustomPagesArray()">
+          <span [ngClass]="{ 'selected-page': currentPage === page }" (click)="executerFonction(page)">{{ page }}</span>
+        </ng-container>
+        <button class="card" (click)="executerFonction(currentPage + 1)"><i class="pi pi-chevron-right"></i></button>
+        <button class="card" (click)="executerFonction(totalPages)"><i class="pi pi-step-forward"></i></button>
+      </div>
+    </ng-container>
+</nav> 
 
 
