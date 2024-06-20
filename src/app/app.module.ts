@@ -15,8 +15,7 @@ import { PhotoService } from './demo/service/photo.service';
 import { AuthInterceptor } from './manager/interceptors/auth.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorInterceptor } from './manager/interceptors/error.interceptor';
-import { ToastModule } from 'primeng/toast';
-// import { EmployeModule } from './employe/employe.module';
+import { ToastModule } from 'primeng/toast';  
 
 @NgModule({
     declarations: [AppComponent, NotfoundComponent],
