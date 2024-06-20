@@ -1,0 +1,219 @@
+<div class="grid p-fluid">
+ 
+  <div class="col-12">
+    <div class="card">
+      <h5 class="title">Liste des publicités</h5>
+      <br>
+      <div class="container">
+        <div class="title">
+          <app-search
+          (searchs)="searchPublicities($event)"
+          [keyword]="keyWord"
+          ></app-search>
+        </div>
+        <p-button label="Ajouter" icon="pi pi-plus" severity="success" (click)="showModalCreateUser()"></p-button>
+      </div>
+      <br>
+      <p-toast></p-toast>
+      <p-confirmDialog key="positionDialog"></p-confirmDialog>
+      <ngx-spinner [name]="'spinnerLoader'" bdColor="rgb(0, 0, 0, 0.8)" size="medium" color="#fff" type="square-jelly-box"
+      [fullScreen]="true">
+      <p style="color: white"> Chargement... </p>
+    </ngx-spinner>
+      <p-table [value]="pubs" dataKey="first_name" [expandedRowKeys]="expandedRows" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 15%;">Titre </th> 
+            <th style="width: 7%;">Status</th>
+            <th style="width: 7%;">Lien</th>
+            <th style="width: 7%;"></th>
+             
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-pub let-expanded="expanded">
+          <tr>
+          
+            <td><a href="#" (click)="openUrl($event,pub.path)">{{ pub.titre }}</a></td>
+            <td (click)="navigateContrat(user.id,user.first_name)">
+              <i class="pi" [ngClass]="{
+                'text-green-500 pi-check-circle': pub.is_active === 1,
+                'text-red-500 pi-times-circle': pub.is_active === 0
+              }"></i>
+            </td> 
+            <td>{{ pub.link | truncate:30 }}</td>
+
+            <td>
+              <div class="flex">
+                <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info mr-2"
+                  (click)="getDetailsPub(pub.id)"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                  (click)="deletePublicitie(pub.id, $event)"></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-c>
+          <tr>
+            <td colspan="7">
+              <div class="p-3">
+                <p-table [value]="c.contrats" dataKey="_id" responsiveLayout="scroll">
+                  <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="contrat.title">Titre <p-sortIcon field="contrat.title"></p-sortIcon></th>
+            <th>Date de création</th>
+            <th></th>
+            <th>
+              <p-button icon="pi pi-plus" [rounded]="true" [text]="true" (click)="openAddContrat(c.id)"></p-button>
+            </th>
+          </tr>
+        </ng-template>
+       
+      </p-table>
+    </div>
+    </td>
+    </tr>
+    </ng-template>
+    </p-table>
+    <br>
+    <app-pagination *ngIf="pubs.length"
+    [dataNumberShow]="dataNumberShow"
+    [offset]="offset"
+    [limit]="limit"
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    (changePage)="changePage($event)"
+    (getPageNumbers)="getPageNumbers()"
+    >
+  
+    </app-pagination>
+    <div class="border-round border-1 surface-border p-4" *ngIf="skeleton">
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+      <div class="my-2">
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog [(visible)]="checkDetailsPub" header="A propos de {{detailPub.titre}}" [modal]="true"
+  [style]="{width:'40%'}" position="top">
+  <ng-template pTemplate="content">
+    <div class="col-12 md:col-12">
+    
+      <div>
+        <h5>Titre du publicité</h5>
+        <input type="text" pInputText [(ngModel)]="detailPub.titre" >
+        <h5>Lien</h5>
+        <input type="text" pInputText [(ngModel)]="detailPub.link" >
+       
+          <br>
+          <br>
+          <br>
+          <p-fileUpload [showUploadButton]="false" cancelLabel="Annuler" chooseLabel="Choisir un fichier" name="demo[]"
+            (onSelect)="getFileUpload($event)" (onUploadUpdate)="onUploadUpdate()" [multiple]="true" accept="image/*"
+          >
+            <ng-template let-mail pTemplate="file"></ng-template>
+            <ng-template pTemplate="content">
+              <div class="grid" *ngFor="let file of f">
+                <div class="col-1"></div>
+                <div class="col-9">
+                    <li>{{ file.name }} - {{ file.size }} bytes</li>
+                </div>
+                <div class="col-2">
+                  <i class="pi pi-times" (click)="removeFile(file)"></i>
+                </div>
+              </div>
+              <div class="text-center"> 
+                <a  href="#" (click)="openUrl($event,detailPub.path)"><img  [src]="this.pathUrl+detailPub.path" width="75" height="75" alt="image"></a>
+              </div>
+              <br>
+            
+              <div class="text-center">
+                <h5>Valider / Desactiver</h5>
+                <p-inputSwitch [ngModel]="checked" (ngModelChange)="oneCheckValidUpdate($event)"></p-inputSwitch> 
+              </div>
+              <br>
+              <div class="text-center">
+                <p-button icon="pi pi-check" label="Modifier" (click)="onUploadUpdate()" severity="info"></p-button>
+              </div>
+            </ng-template>
+          </p-fileUpload>
+          
+          <br>
+        
+      </div>
+      <br>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="modalCreateUser" header="Nouvelle publicité" [modal]="true" [style]="{width:'40%'}" position="top">
+  <ng-template pTemplate="content">
+    <div class="col-12 md:col-12">
+    
+      <div>
+        <h5>Titre du publicité</h5>
+        <input type="text" pInputText [(ngModel)]="pubBody.titre" >
+        <h5>Lien</h5>
+        <input type="text" pInputText [(ngModel)]="pubBody.link" >
+       
+          <br>
+          <br>
+          <br>
+          <p-fileUpload [showUploadButton]="false" cancelLabel="Annuler" chooseLabel="Choisir un fichier" name="demo[]"
+            (onSelect)="getFileUpload($event)" (onUpload)="onUpload()" [multiple]="true" accept="image/*"
+          >
+            <ng-template let-mail pTemplate="file"></ng-template>
+            <ng-template pTemplate="content">
+              <div class="grid" *ngFor="let file of f">
+                <div class="col-1"></div>
+                <div class="col-9">
+                    <li>{{ file.name }} - {{ file.size }} bytes</li>
+                </div>
+                <div class="col-2">
+                  <i class="pi pi-times" (click)="removeFile(file)"></i>
+                </div>
+              </div>
+            
+              <div class="text-center">
+                <h5>Valider / Desactiver</h5>
+                <p-inputSwitch [ngModel]="checked" (ngModelChange)="oneCheckValid($event)"></p-inputSwitch>
+              </div>
+              <br>
+              <div class="text-center">
+                <p-button icon="pi pi-check" label="Valider" (click)="onUpload()" severity="info"></p-button>
+              </div>
+            </ng-template>
+          </p-fileUpload>
+          
+          <br>
+        
+      </div>
+      <br>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    
+  </ng-template>
+</p-dialog>
+

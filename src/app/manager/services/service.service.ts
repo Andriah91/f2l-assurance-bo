@@ -25,6 +25,10 @@ export class ServiceService {
     return this.http.post(`${environment.url}/api/searchNotif`, data);
   }
 
+  getAllPublicities(data:any): any {
+    return this.http.post(`${environment.url}/api/searchPub`, data);
+  }
+
   getAllContrat(id: any): any {
     return this.http.get(`${environment.url}/api/contrats/${id}`, id);
   }
@@ -128,8 +132,7 @@ export class ServiceService {
 
   deletedoc(id: any) {
     return this.http.delete(`${environment.url}/api/documents/${id}`, id);
-  }
-
+  } 
   
   // registerNotification(data: any) {
   //   return this.http.post<any>(`${environment.url}/api/notifications`, data);
@@ -145,5 +148,20 @@ export class ServiceService {
 
   updateNotification(data: any) {
     return this.http.post(`${environment.url}/api/notifications/info`, data);
+  }
+
+  updatePublicity(data: any) {
+    return this.http.post(`${environment.url}/api/banieres/info`, data);
+  }
+
+  registerPublicity(data: any) {
+    return this.http.post<any>(`${environment.url}/api/banieres`, data);
+  }
+
+  deletePublicity(id: any) {
+    return this.http.delete(`${environment.url}/api/banieres/${id}`, id);
+  }
+  getDetailsPub(id: any): any {
+    return this.http.get(`${environment.url}/api/banieres/${id}`, id);
   }
 }

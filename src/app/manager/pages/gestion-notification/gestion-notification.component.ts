@@ -81,6 +81,17 @@ export class GestionNotificationComponent implements OnInit {
     this.getAllNotifications();
   }
 
+  oneCheckValid(value: any) {
+    if (value) {
+      this.detailUser.is_valid = 1;
+     
+    } else {
+      this.detailUser.is_valid = 0;
+    }
+    const foundItem = this.isValid.find((item) => item.value === value);
+    this.checked = foundItem.status;
+  }
+
   showModalCreateUser() {
     this.clearForm();
     this.modalCreateUser = true;

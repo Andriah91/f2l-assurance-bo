@@ -46,6 +46,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { PasswordModule } from 'primeng/password';
 import { GestionAdministrateurComponent } from './pages/gestion-administrateur/gestion-administrateur.component';
 import { GestionNotificationComponent } from './pages/gestion-notification/gestion-notification.component';
+import { GestionPubComponent } from './pages/gestion-pub/gestion-pub.component';
+import { TruncatePipe } from '../truncate.pipe';
 
 @NgModule({
     imports: [
@@ -92,11 +94,13 @@ import { GestionNotificationComponent } from './pages/gestion-notification/gesti
         PasswordModule
     ],
     declarations: [
+        TruncatePipe,
         ManagerComponent,
         GestionPersonnelComponent,
         GestionAdministrateurComponent,
         GestionServicesComponent,
-        GestionNotificationComponent
+        GestionNotificationComponent,
+        GestionPubComponent
     ],
     providers: [ConfirmationService, MessageService, NgxSpinnerService, DatePipe ],
 })
