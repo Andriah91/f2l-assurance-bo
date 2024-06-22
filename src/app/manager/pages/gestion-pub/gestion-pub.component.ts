@@ -154,7 +154,7 @@ onUploadUpdate() {
     });
     return;
   }
-  if (this.detailPub.link != "" && !this.isLink(this.detailPub.link) || this.detailPub.link!=null && !this.isLink(this.detailPub.link)) {
+  if (this.detailPub.link != "" && !this.isLink(this.detailPub.link)) {
     this.messageService.add({
       severity: "error",
           summary: "",
@@ -252,14 +252,15 @@ onUpload() {
     });
     return;
   }
-  if (this.pubBody.link != "" && !this.isLink(this.pubBody.link) || this.pubBody.link!=null && !this.isLink(this.pubBody.link)) {
+  if (this.pubBody.link != "" && !this.isLink(this.pubBody.link)) {
     this.messageService.add({
       severity: "error",
           summary: "",
-          detail: "Format du lien invalide",
+          detail: "Format du lien invalide a",
     });
     return;
   }
+ 
   if (this.f.length ==0 || this.f.length>1) {
     this.messageService.add({
       severity: "error",
