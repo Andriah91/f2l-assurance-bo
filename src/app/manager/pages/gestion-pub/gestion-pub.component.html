@@ -23,8 +23,9 @@
       <p-table [value]="pubs" dataKey="first_name" [expandedRowKeys]="expandedRows" responsiveLayout="scroll">
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 15%;">Titre </th> 
-            <th style="width: 7%;">Status</th>
+            <th style="width: 7%;">Titre </th> 
+            <th style="width: 7%;">Image</th>
+            <th style="width: 3%;">Status</th>  
             <th style="width: 7%;">Lien</th>
             <th style="width: 7%;"></th>
              
@@ -33,14 +34,15 @@
         <ng-template pTemplate="body" let-pub let-expanded="expanded">
           <tr>
           
-            <td><a href="#" (click)="openUrl($event,pub.path)">{{ pub.titre }}</a></td>
+            <td> {{ pub.titre }}</td>
+            <td> <a  href="#" (click)="openUrl($event,pub.path)"><img  [src]="this.pathUrl+pub.path" width="120" height="75" alt="image"></a> </td>
             <td (click)="navigateContrat(user.id,user.first_name)">
               <i class="pi" [ngClass]="{
                 'text-green-500 pi-check-circle': pub.is_active === 1,
                 'text-red-500 pi-times-circle': pub.is_active === 0
               }"></i>
             </td> 
-            <td>{{ pub.link | truncate:30 }}</td>
+            <td><a href="#" (click)="openLink($event,pub.link)">{{ pub.link | truncate:30 }}</a></td>
 
             <td>
               <div class="flex">

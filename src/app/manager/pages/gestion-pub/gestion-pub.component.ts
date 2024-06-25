@@ -106,6 +106,10 @@ openUrl(event: MouseEvent,url: string) {
     }
    window.open(this.pathUrl + url, "_blank");
 }
+openLink(event: MouseEvent,url: string)
+{
+  window.open(url, "_blank");
+}
 getFileUpload(event:UploadEvent) {
   for(let file of event.files) {
       this.f.push(file);
@@ -138,6 +142,9 @@ openModal(id: any) {
   this.pubBody.link = "";
 }
 isLink(link: string): boolean {
+  if(link==null){
+    return true
+  }
   return link.startsWith('http://') || link.startsWith('https://');
 }
 getImageType(path:any)
@@ -146,6 +153,7 @@ getImageType(path:any)
 }
 
 onUploadUpdate() {
+  console.log(this.detailPub.link);
   if (this.detailPub.titre === "") {
     this.messageService.add({
       severity: "error",
@@ -154,7 +162,7 @@ onUploadUpdate() {
     });
     return;
   }
-  if (this.detailPub.link != "" && !this.isLink(this.detailPub.link)) {
+  if ((this.detailPub.link != "" && !this.isLink(this.detailPub.link))){
     this.messageService.add({
       severity: "error",
           summary: "",
@@ -243,7 +251,8 @@ onUploadUpdate() {
   } 
 
   } 
-onUpload() {
+onUpload() { 
+  
   if (this.pubBody.titre === "") {
     this.messageService.add({
       severity: "error",
@@ -256,7 +265,7 @@ onUpload() {
     this.messageService.add({
       severity: "error",
           summary: "",
-          detail: "Format du lien invalide a",
+          detail: "Format du lien invalide ",
     });
     return;
   }
