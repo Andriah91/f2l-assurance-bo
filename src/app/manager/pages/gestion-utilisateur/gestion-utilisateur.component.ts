@@ -39,6 +39,9 @@ export class GestionServicesComponent implements OnInit {
     phone: "",
     is_admin: "",
     is_valid: 0,
+    title:"Status du compte",
+    path:"path",
+    message:""
   };
   isAdmin = [
     { name: "Admin", value: 1 },
@@ -313,7 +316,7 @@ export class GestionServicesComponent implements OnInit {
     this.lastValisation=2;
     this.checkDetailsUsers = true;
     this.serviceService.getDetailsUsers(id).subscribe((data: any) => {
-      this.detailUser = data.user;
+      this.detailUser = data.user; 
       this.checked = this.detailUser.is_valid === 1;
       this.lastValisation=this.detailUser.is_valid;
     });
@@ -383,7 +386,8 @@ export class GestionServicesComponent implements OnInit {
         accept: () => {
           this.disableUpdate = true;
           this.spinner.show("spinnerLoader");
-          this.serviceService.updateUser(this.detailUser).subscribe(() => {
+          this.detailUser.message="Votre compte a été "+messageValue[this.detailUser.is_valid];
+          this.serviceService.userStateNotification(this.detailUser).subscribe(() => {
             this.getAllUsers();
             this.checkDetailsUsers = false;
             this.disableUpdate = false;
