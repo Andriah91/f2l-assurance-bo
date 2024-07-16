@@ -283,9 +283,11 @@ export class GestionPersonnelComponent implements OnInit {
               path: this.getFilePath(data.paths[index]),
               type: this.getFileType(data.paths[index]),
               contrat_id: this.idContrat,
+              message:"Ajout du document "+ this.titre+" dans votre contrat"
             };
 
-            this.serviceService.createDocument(body).subscribe(
+          //  this.serviceService.createDocument(body).subscribe(
+            this.serviceService.fileStateNotification(body).subscribe(
               () => {
                 this.getAllContrat();
                 this.f = [];

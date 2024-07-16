@@ -163,6 +163,7 @@ onUpload() {
       title: this.notifBody.title,
       path: "path",
       message: this.notifBody.message,
+      insert: true
     };
     this.serviceService.registerNotification(body).subscribe(
       () => {
@@ -200,6 +201,7 @@ onUpload() {
               title: this.notifBody.title,
               path: this.getFilePath(data.paths[index]),
               message: this.notifBody.message,
+              insert:true
             };
   
             this.serviceService.registerNotification(body).subscribe(

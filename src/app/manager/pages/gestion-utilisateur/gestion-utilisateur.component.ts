@@ -28,6 +28,8 @@ export class GestionServicesComponent implements OnInit {
   currentPage=1;
   totalPages=0;
 
+  lastValisation:number=2;
+
   users: any[] = [];
   detailUser = {
     first_name: "",
@@ -37,6 +39,9 @@ export class GestionServicesComponent implements OnInit {
     phone: "",
     is_admin: "",
     is_valid: 0,
+    title:"Status du compte",
+    path:"path",
+    message:""
   };
   isAdmin = [
     { name: "Admin", value: 1 },
@@ -79,6 +84,8 @@ export class GestionServicesComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+
+  
     this.environments = environment;
     this.getAllUsers();
 
@@ -89,6 +96,8 @@ export class GestionServicesComponent implements OnInit {
       ],
       dayNamesMin: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
     });
+
+    
   }
 
   openAddContrat(id: any) {
@@ -304,10 +313,12 @@ export class GestionServicesComponent implements OnInit {
     }
   } 
   getDEtailsUsers(id: any) {
+    this.lastValisation=2;
     this.checkDetailsUsers = true;
     this.serviceService.getDetailsUsers(id).subscribe((data: any) => {
-      this.detailUser = data.user;
+      this.detailUser = data.user; 
       this.checked = this.detailUser.is_valid === 1;
+      this.lastValisation=this.detailUser.is_valid;
     });
   }
 
@@ -359,21 +370,58 @@ export class GestionServicesComponent implements OnInit {
       });
       return;
     }
-    this.disableUpdate = true;
-    this.spinner.show("spinnerLoader");
-    this.serviceService.updateUser(this.detailUser).subscribe(() => {
-      this.getAllUsers();
-      this.checkDetailsUsers = false;
-      this.disableUpdate = false;
-      this.spinner.hide("spinnerLoader");
-    },
-    (error) => {
-      let status = this.statusService.getStatus();
-      this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
-      this.spinner.hide("spinnerLoader");
-      return;
+    if (this.lastValisation != this.detailUser.is_valid) {
+      let messageValue = ["désactivé", "activé"];
+      this.confirmationService.confirm({
+        target: event.target as EventTarget,
+        message: "Le compte sera " + messageValue[this.detailUser.is_valid],
+        header: "Confirmer?",
+        icon: "pi pi-info-circle",
+        acceptButtonStyleClass: "p-button-danger p-button-text",
+        rejectButtonStyleClass: "p-button-text p-button-text",
+        acceptIcon: "none",
+        rejectIcon: "none",
+        acceptLabel: "Oui",
+        rejectLabel: "Non",
+        accept: () => {
+          this.disableUpdate = true;
+          this.spinner.show("spinnerLoader");
+          this.detailUser.message="Votre compte a été "+messageValue[this.detailUser.is_valid];
+          this.serviceService.userStateNotification(this.detailUser).subscribe(() => {
+            this.getAllUsers();
+            this.checkDetailsUsers = false;
+            this.disableUpdate = false;
+            this.spinner.hide("spinnerLoader");
+          },
+          (error) => {
+            let status = this.statusService.getStatus();
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: status });
+            this.spinner.hide("spinnerLoader");
+            return;
+          });
+        },
+        reject: () => {
+          return;
+        },
+        
+      });
+    } else {
+      this.disableUpdate = true;
+      this.spinner.show("spinnerLoader");
+      this.serviceService.updateUser(this.detailUser).subscribe(() => {
+        this.getAllUsers();
+        this.checkDetailsUsers = false;
+        this.disableUpdate = false;
+        this.spinner.hide("spinnerLoader");
+      },
+      (error) => {
+        let status = this.statusService.getStatus();
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: status });
+        this.spinner.hide("spinnerLoader");
+        return;
+      });
     }
-    );
+    
   }
 
   hideAjoutServicePopup() {

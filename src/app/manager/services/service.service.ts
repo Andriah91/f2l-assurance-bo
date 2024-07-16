@@ -132,11 +132,15 @@ export class ServiceService {
 
   deletedoc(id: any) {
     return this.http.delete(`${environment.url}/api/documents/${id}`, id);
-  } 
-  
-  // registerNotification(data: any) {
-  //   return this.http.post<any>(`${environment.url}/api/notifications`, data);
-  // }
+  }  
+
+  userStateNotification(data: any) {
+    return this.http.post<any>(`${environment.url}/api/userNotif`, data);
+  }
+
+  fileStateNotification(data: any) {
+    return this.http.post<any>(`${environment.url}/api/fileNotif`, data);
+  }
 
   registerNotification(data: any) {
       return this.http.post<any>(`${environment.url}/api/pushNotif`, data);

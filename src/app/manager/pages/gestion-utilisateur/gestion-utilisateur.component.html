@@ -15,7 +15,7 @@
       </div>
       <br>
       <p-toast></p-toast>
-      <p-confirmDialog key="positionDialog"></p-confirmDialog>
+      <!--p-confirmDialog key="positionDialog"></p-confirmDialog-->
       <ngx-spinner [name]="'spinnerLoader'" bdColor="rgb(0, 0, 0, 0.8)" size="medium" color="#fff" type="square-jelly-box"
                   [fullScreen]="true">
                   <p style="color: white"> Chargement... </p>
@@ -196,14 +196,7 @@
         <input type="text" pInputText [(ngModel)]="userBody.registration_number" placeholder="1234567">
         <h5>Email</h5>
         <input type="text" pInputText [(ngModel)]="userBody.email" placeholder="exemple@gmail.com">
-        <!-- <h5>Mot de passe</h5>
-        <p-password [(ngModel)]="userBody.password" [toggleMask]="true" [feedback]="false"></p-password>
-        <h5>Confirmer le mot de passe</h5>
-        <input type="password" pInputText [(ngModel)]="userBody.confirmPassword"
-          placeholder="Confirmer le mot de passe">
-        <h5>Rôle</h5>
-        <p-dropdown [options]="isAdmin" [(ngModel)]="userBody.is_admin" optionLabel="name" [showClear]="true"
-          placeholder="Admin / Client"></p-dropdown> -->
+       
         <h5>Numéro</h5>
         <p-inputGroup>
           <p-inputGroupAddon>+33</p-inputGroupAddon>
