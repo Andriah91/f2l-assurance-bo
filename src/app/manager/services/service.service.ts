@@ -168,4 +168,24 @@ export class ServiceService {
   getDetailsPub(id: any): any {
     return this.http.get(`${environment.url}/api/banieres/${id}`, id);
   }
+
+  // Méthode pour récupérer toutes les cartes
+  getAllCartes(): Observable<any> {
+    return this.http.get(`${environment.url}/mescartes/${localStorage.getItem('userId')}`);
+  }
+
+  // Méthode pour uploader une image pour une carte
+  uploadCarteImage(data: FormData): Observable<any> {
+    return this.http.post(`${environment.url}/cartes/info`, data);
+  }
+
+  // Méthode pour créer une carte
+  createCarte(carte: any): Observable<any> {
+    return this.http.post(`${environment.url}/cartes`, carte);
+  }
+
+  // Méthode pour supprimer une carte
+  deleteCarte(id: string): Observable<any> {
+    return this.http.delete(`${environment.url}/cartes/${id}`);
+  }
 }

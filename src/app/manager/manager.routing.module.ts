@@ -7,6 +7,7 @@ import { GestionServicesComponent } from "./pages/gestion-utilisateur/gestion-ut
 import { NgModule } from "@angular/core";
 import { GestionAdministrateurComponent } from "./pages/gestion-administrateur/gestion-administrateur.component";
 import { GestionPubComponent } from './pages/gestion-pub/gestion-pub.component';
+import { GestionCartetiersComponent } from './pages/gestion-cartetiers/gestion-cartetiers.component';
 
 const routes: Routes = [
   {
@@ -32,6 +33,10 @@ const routes: Routes = [
       {
         path: "pub", 
         component: GestionPubComponent,
+      },
+      {
+        path: "cartes", 
+        component: GestionCartetiersComponent,
       },
       {
         path: "",
