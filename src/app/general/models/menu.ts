@@ -16,6 +16,11 @@ export class Menu {
       label: 'Profil et Horaire de travail',
       routerLink: '/employe/profileHoraire',
       icon: 'bi bi-journal-text',
+    },
+    {
+      label: ' Carte tiers',
+      routerLink: '/employe/cartetiers',
+      icon: 'bi bi-journal-text',
     }
   ];
 

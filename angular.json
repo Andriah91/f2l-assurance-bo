@@ -3,91 +3,92 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "sakai-ng": {
-            "projectType": "application",
-            "schematics": {
-                "@schematics/angular:component": {
-                    "style": "scss"
-                }
+      "sakai-ng": {
+        "root": "",
+        "sourceRoot": "src",
+        "projectType": "application",
+        "prefix": "app",
+        "architect": {
+          "build": {
+            "builder": "@angular-devkit/build-angular:browser",
+            "options": {
+              "outputPath": "dist/sakai-ng",
+              "index": "src/index.html",
+              "main": "src/main.ts",
+              "polyfills": ["zone.js"],
+              "tsConfig": "tsconfig.app.json",
+              "inlineStyleLanguage": "scss",
+              "assets": ["src/favicon.ico", "src/assets"],
+              "styles": ["src/styles.scss"],
+              "scripts": []
             },
-            "root": "",
-            "sourceRoot": "src",
-            "prefix": "app",
-            "architect": {
-                "build": {
-                    "builder": "@angular-devkit/build-angular:browser",
-                    "options": {
-                        "outputPath": "dist/m1p10mean-achile-hajaina-Admin",
-                        "index": "src/index.html",
-                        "main": "src/main.ts",
-                        "polyfills": ["zone.js"],
-                        "tsConfig": "tsconfig.app.json",
-                        "inlineStyleLanguage": "scss",
-                        "assets": ["src/favicon.ico", "src/assets"],
-                        "styles": ["src/styles.scss"],
-                        "scripts": []
-                    },
-                    "configurations": {
-                        "production": {
-                            "budgets": [
-                                {
-                                    "type": "initial",
-                                    "maximumWarning": "10mb",
-                                    "maximumError": "15mb"
-                                },
-                                {
-                                    "type": "anyComponentStyle",
-                                    "maximumWarning": "20mb",
-                                    "maximumError": "40mb"
-                                }
-                            ],
-                            "outputHashing": "all"
-                        },
-                        "development": {
-                            "buildOptimizer": false,
-                            "optimization": false,
-                            "vendorChunk": true,
-                            "extractLicenses": false,
-                            "sourceMap": true,
-                            "namedChunks": true
-                        }
-                    },
-                    "defaultConfiguration": "production"
-                },
-                "serve": {
-                    "builder": "@angular-devkit/build-angular:dev-server",
-                    "configurations": {
-                        "production": {
-                            "buildTarget": "sakai-ng:build:production"
-                        },
-                        "development": {
-                            "buildTarget": "sakai-ng:build:development"
-                        }
-                    },
-                    "defaultConfiguration": "development"
-                },
-                "extract-i18n": {
-                    "builder": "@angular-devkit/build-angular:extract-i18n",
-                    "options": {
-                        "buildTarget": "sakai-ng:build"
-                    }
-                },
-                "test": {
-                    "builder": "@angular-devkit/build-angular:karma",
-                    "options": {
-                        "polyfills": ["zone.js", "zone.js/testing"],
-                        "tsConfig": "tsconfig.spec.json",
-                        "karmaConfig": "karma.conf.js",
-                        "inlineStyleLanguage": "scss",
-                        "assets": ["src/favicon.ico", "src/assets"],
-                        "styles": ["src/styles.scss"],
-                        "scripts": []
-                    }
-                }
+            "configurations": {
+              "production": {
+                "budgets": [
+                  {
+                    "type": "initial",
+                    "maximumWarning": "10mb",
+                    "maximumError": "15mb"
+                  },
+                  {
+                    "type": "anyComponentStyle",
+                    "maximumWarning": "20mb",
+                    "maximumError": "40mb"
+                  }
+                ],
+                "outputHashing": "all"
+              },
+              "development": {
+                "buildOptimizer": false,
+                "optimization": false,
+                "vendorChunk": true,
+                "extractLicenses": false,
+                "sourceMap": true,
+                "namedChunks": true
+              }
+            },
+            "defaultConfiguration": "production"
+          },
+          "serve": {
+            "builder": "@angular-devkit/build-angular:dev-server",
+            "options": {
+              "host": "localhost",
+              "port": 8100,
+              "browserTarget": "sakai-ng:build"
+            },
+            "configurations": {
+              "production": {
+                "browserTarget": "sakai-ng:build:production"
+              },
+              "development": {
+                "browserTarget": "sakai-ng:build:development"
+              }
+            },
+            "defaultConfiguration": "development"
+          },
+          "extract-i18n": {
+            "builder": "@angular-devkit/build-angular:extract-i18n",
+            "options": {
+              "browserTarget": "sakai-ng:build"
             }
+          },
+          "test": {
+            "builder": "@angular-devkit/build-angular:karma",
+            "options": {
+              "polyfills": ["zone.js", "zone.js/testing"],
+              "tsConfig": "tsconfig.spec.json",
+              "karmaConfig": "karma.conf.js",
+              "inlineStyleLanguage": "scss",
+              "assets": ["src/favicon.ico", "src/assets"],
+              "styles": ["src/styles.scss"],
+              "scripts": []
+            }
+          }
         }
+      }
     },
     "cli": {
-        "analytics": "53de220e-cbb9-497c-a3c5-756414bad598"
+      "analytics": "your-analytics-id"
     }
-}
+  }
+  

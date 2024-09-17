@@ -1,0 +1,24 @@
+{
+  "name": "f2l-assurance-bo",
+  "integrations": {},
+  "type": "angular",
+  "serve": {
+  "builder": "@angular-devkit/build-angular:dev-server",
+  "options": {
+    "browserTarget": "sakai-ng:build",
+    "host": "localhost",
+    "port": 8100
+  },
+  "configurations": {
+    "production": {
+      "browserTarget": "sakai-ng:build:production"
+    },
+    "development": {
+      "browserTarget": "sakai-ng:build:development"
+    }
+  },
+  "defaultConfiguration": "development"
+}
+
+
+}
