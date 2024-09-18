@@ -19,7 +19,7 @@ export class Menu {
     },
     {
       label: ' Carte tiers',
-      routerLink: '/employe/cartetiers',
+      routerLink: '/employe/cartes',
       icon: 'bi bi-journal-text',
     }
   ];

@@ -102,7 +102,7 @@ import { GestionCartetiersComponent } from './pages/gestion-cartetiers/gestion-c
         GestionServicesComponent,
         GestionNotificationComponent,
         GestionPubComponent,
-        GestionCartetiersComponent
+       GestionCartetiersComponent
     ],
     providers: [ConfirmationService, MessageService, NgxSpinnerService, DatePipe ],
 })

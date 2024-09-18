@@ -46,7 +46,7 @@ export class MenuComponent implements OnInit {
         {
           label: "Carte tiers",
           icon: "pi pi-fw pi-images",
-          routerLink: ["/manager/cartetiers"],
+          routerLink: ["/manager/cartes"],
         }
       ],
       

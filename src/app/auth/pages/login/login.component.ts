@@ -60,7 +60,6 @@ export class LoginComponent implements OnInit {
     login() {
         this.spinner.show("login");
         this.errorMessage="";
-
         if (!this.isValidEmail(this.username)) {
             this.spinner.hide("login");
             this.errorMessage = "Format d'e-mail invalide";
@@ -70,6 +69,7 @@ export class LoginComponent implements OnInit {
         this.errorMessage = null;
         this.service.login(this.username, this.password).subscribe(
             (user) => {
+                    
                 // localStorage.setItem('token', user.token);
                 // console.log('login successful');
                 this.spinner.hide("login");
