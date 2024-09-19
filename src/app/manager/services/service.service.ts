@@ -170,9 +170,30 @@ export class ServiceService {
     return this.http.get(`${environment.url}/api/banieres/${id}`, id);
   }
 
+<<<<<<< Updated upstream
 // Méthode pour récupérer toutes les cartes par client ID
  searchCartes(params: any): Observable<any> {
     return this.http.post(`${environment.url}/api/searchcartes`, params);
+=======
+  // Méthode pour récupérer toutes les cartes
+  getAllCartes(): Observable<any> {
+    return this.http.get(`${environment.url}/api/mescartes/${localStorage.getItem('id')}`);
+  }
+
+  // Méthode pour uploader une image pour une carte
+  uploadCarteImage(data: FormData): Observable<any> {
+    return this.http.post(`${environment.url}/api/cartes/info`, data);
+  }
+
+  // Méthode pour créer une carte
+  createCarte(carte: any): Observable<any> {
+    return this.http.post(`${environment.url}/api/cartes`, carte);
+  }
+
+  // Méthode pour supprimer une carte
+  deleteCarte(id: string): Observable<any> {
+    return this.http.delete(`${environment.url}/api/cartes/${id}`);
+>>>>>>> Stashed changes
   }
 // Méthode pour créer une carte
 createCarte(carteData: any): Observable<any> {
