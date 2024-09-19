@@ -23,6 +23,8 @@ const routes: Routes = [
         path: '**',
         redirectTo: 'manager',
     },
+
+    
 ];
 @NgModule({
     imports: [RouterModule.forRoot(routes)],

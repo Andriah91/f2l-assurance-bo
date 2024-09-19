@@ -8,24 +8,25 @@ import { jwtDecode } from "jwt-decode";
 @Injectable({
   providedIn: "root",
 })
+
 export class ServiceService {
   private userSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
-  constructor(private http: HttpClient, private cookieService: CookieService) {}
+  constructor(private http: HttpClient, private cookieService: CookieService) { }
 
-  getAllUsers(data:any): any {
+  getAllUsers(data: any): any {
     return this.http.post(`${environment.url}/api/searchUser`, data);
   }
 
-  getAllAdmins(data:any): any {
+  getAllAdmins(data: any): any {
     return this.http.post(`${environment.url}/api/searchAdmin`, data);
   }
 
-  getAllNotifications(data:any): any {
+  getAllNotifications(data: any): any {
     return this.http.post(`${environment.url}/api/searchNotif`, data);
   }
 
-  getAllPublicities(data:any): any {
+  getAllPublicities(data: any): any {
     return this.http.post(`${environment.url}/api/searchPub`, data);
   }
 
@@ -61,7 +62,7 @@ export class ServiceService {
           this.userSubject.next(user);
           const {
             authorisation: { token },
-          } = user;     
+          } = user;
           document.cookie = `sessionUser=${token}; path=/`;
           return user;
         })
@@ -132,7 +133,7 @@ export class ServiceService {
 
   deletedoc(id: any) {
     return this.http.delete(`${environment.url}/api/documents/${id}`, id);
-  }  
+  }
 
   userStateNotification(data: any) {
     return this.http.post<any>(`${environment.url}/api/userNotif`, data);
@@ -143,8 +144,8 @@ export class ServiceService {
   }
 
   registerNotification(data: any) {
-      return this.http.post<any>(`${environment.url}/api/pushNotif`, data);
-    }
+    return this.http.post<any>(`${environment.url}/api/pushNotif`, data);
+  }
 
   deleteNotification(id: any) {
     return this.http.delete(`${environment.url}/api/notifications/${id}`, id);
@@ -169,23 +170,27 @@ export class ServiceService {
     return this.http.get(`${environment.url}/api/banieres/${id}`, id);
   }
 
-  // Méthode pour récupérer toutes les cartes
-  getAllCartes(): Observable<any> {
-    return this.http.get(`${environment.url}/mescartes/${localStorage.getItem('userId')}`);
+// Méthode pour récupérer toutes les cartes par client ID
+ searchCartes(params: any): Observable<any> {
+    return this.http.post(`${environment.url}/api/searchcartes`, params);
   }
+// Méthode pour créer une carte
+createCarte(carteData: any): Observable<any> {
+  return this.http.post(`${environment.url}/api/cartes`, carteData);
+}
 
-  // Méthode pour uploader une image pour une carte
-  uploadCarteImage(data: FormData): Observable<any> {
-    return this.http.post(`${environment.url}/cartes/info`, data);
-  }
+// Méthode pour mettre à jour une carte
+updateCarte(carteData: any): Observable<any> {
+  return this.http.post(`${environment.url}/api/cartes/info`, carteData);
+}
 
-  // Méthode pour créer une carte
-  createCarte(carte: any): Observable<any> {
-    return this.http.post(`${environment.url}/cartes`, carte);
-  }
+// Méthode pour supprimer une carte
+deleteCarte(carteId: number): Observable<any> {
+  return this.http.delete(`${environment.url}/api/cartes/${carteId}`);
+}
 
-  // Méthode pour supprimer une carte
-  deleteCarte(id: string): Observable<any> {
-    return this.http.delete(`${environment.url}/cartes/${id}`);
-  }
+// Méthode pour uploader une image
+uploadCarteImage(uploadData: FormData): Observable<any> {
+  return this.http.post(`${environment.url}/api/upload/image`, uploadData);
+}
 }

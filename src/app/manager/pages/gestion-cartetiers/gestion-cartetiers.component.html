@@ -1,83 +1,153 @@
 <div class="grid p-fluid">
-    <div class="col-12">
-      <div class="card">
-        <div class="container">
-          <h5 class="title" style="margin-bottom: 10px;">Liste des Cartes Tiers</h5>
-        </div>
-        <p-toast></p-toast>
-        <p-confirmDialog key="positionDialog"></p-confirmDialog>
-        <ngx-spinner [name]="'spinnerLoader'" bdColor="rgb(0, 0, 0, 0.8)" size="medium" color="#fff" type="square-jelly-box"
-          [fullScreen]="true">
-          <p style="color: white">Chargement...</p>
-        </ngx-spinner>
-        
-        <!-- Table des Cartes -->
-        <p-table [value]="cartes" dataKey="clientName" responsiveLayout="scroll">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Nom du Client</th>
-              <th>Image</th>
-              <th>
-                <p-button icon="pi pi-plus" [rounded]="true" [text]="true" (click)="openAddCarte()"></p-button>
-              </th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-carte>
-            <tr>
-              <td>{{ carte.clientName }}</td>
-              <td><img [src]="carte.imageUrl" alt="Carte Image" width="50"></td>
-              <td>
-                <div class="flex">
-                  <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-info mr-2"
-                    (click)="editCarte(carte)"></button>
-                  <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
-                    (click)="deleteCarte(carte.id, $event)"></button>
-                </div>
-              </td>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td colspan="3">Aucune carte disponible.</td>
-            </tr>
-          </ng-template>
-        </p-table>
-  
-        <!-- Skeleton pour chargement -->
-        <div class="border-round border-1 surface-border p-4" *ngIf="skeleton">
-          <div class="my-2">
-            <p-skeleton width="100%" height="4rem"></p-skeleton>
-          </div>
+  <div class="col-12">
+    <div class="card">
+      <div class="container">
+        <h5 class="title" style="margin-bottom: 10px;">Liste des Cartes Tiers</h5>
+      </div>
+
+      <!-- Notifications -->
+      <p-toast></p-toast>
+
+      <!-- Dialogue de confirmation -->
+      <p-confirmDialog key="positionDialog"></p-confirmDialog>
+
+      <!-- Spinner de chargement -->
+      <ngx-spinner 
+        [name]="'spinnerLoader'" 
+        bdColor="rgba(0, 0, 0, 0.8)" 
+        size="medium" 
+        color="#fff" 
+        type="square-jelly-box" 
+        [fullScreen]="true"
+      >
+        <p style="color: white">Chargement...</p>
+      </ngx-spinner>
+
+      <!-- Table des Cartes -->
+      <p-table 
+        [value]="cartes" 
+        dataKey="id" 
+        responsiveLayout="scroll"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Nom du Client</th>
+            <th>Image</th>
+            <th>
+              <!-- Bouton pour ajouter une nouvelle carte -->
+              <p-button 
+                icon="pi pi-plus" 
+                [rounded]="true" 
+                [text]="true" 
+                (click)="openAddCarte()" 
+                title="Ajouter une nouvelle carte"
+              ></p-button>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-carte>
+          <tr>
+            <!-- Nom du client, avec vérification s'il existe -->
+            <td>{{ carte.client?.first_name }} {{ carte.client?.last_name }}</td>
+            <td>
+              <!-- Affichage de l'image de la carte -->
+              <img [src]="carte.path" alt="Carte Image" width="50" style="object-fit: cover;" />
+            </td>
+            <td>
+              <div class="flex">
+                <!-- Bouton pour éditer la carte -->
+                <button 
+                  pButton 
+                  pRipple 
+                  icon="pi pi-pencil" 
+                  class="p-button-rounded p-button-info mr-2" 
+                  (click)="openEditCarte(carte)" 
+                  title="Éditer"
+                ></button>
+                <!-- Bouton pour supprimer la carte -->
+                <button 
+                  pButton 
+                  pRipple 
+                  icon="pi pi-trash" 
+                  class="p-button-rounded p-button-danger" 
+                  (click)="deleteCarte(carte.id, $event)" 
+                  title="Supprimer"
+                ></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <!-- Message affiché lorsque la liste des cartes est vide -->
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="3">Aucune carte disponible.</td> <!-- Changement du colspan de 4 à 3 pour correspondre aux colonnes du tableau -->
+          </tr>
+        </ng-template>
+      </p-table>
+
+      <!-- Skeleton pour le chargement, affiché lorsque les données sont en cours de chargement -->
+      <div class="border-round border-1 surface-border p-4" *ngIf="skeleton">
+        <div class="my-2">
+          <p-skeleton width="100%" height="4rem"></p-skeleton>
         </div>
       </div>
     </div>
   </div>
-  
-  <!-- Dialog d'ajout de Carte Tiers -->
-  <p-dialog header="Ajouter une Carte Tiers" [(visible)]="ajouterCarte" [modal]="true" [style]="{ width: '40vw' }"
-    [draggable]="false" [resizable]="false">
-    <div class="col-12">
-      <h5>Sélectionner un client</h5>
-      <input type="text" pInputText [(ngModel)]="selectedClient" placeholder="Nom du Client">
-      <br>
-      <h5>Importer une image</h5>
-      <p-fileUpload [showUploadButton]="false" cancelLabel="Annuler" chooseLabel="Choisir un fichier" name="image[]"
-        (onSelect)="getFileUpload($event)" [multiple]="false" accept="image/*">
-        <ng-template let-file pTemplate="file"></ng-template>
-        <ng-template pTemplate="content">
-          <div class="grid" *ngFor="let file of uploadedFiles">
-            <div class="col-9">
-              <li>{{ file.name }} - {{ file.size }} bytes</li>
-            </div>
-            <div class="col-2">
-              <i class="pi pi-times" (click)="removeFile(file)"></i>
-            </div>
-          </div>
-          <div class="text-center">
-            <p-button icon="pi pi-check" label="Ajouter" (click)="addCarte()" severity="info"></p-button>
-          </div>
-        </ng-template>
-      </p-fileUpload>
+</div>
+
+<!-- Dialog d'ajout/édition de Carte Tiers -->
+<p-dialog 
+  header="{{ isEditMode ? 'Éditer' : 'Ajouter' }} une Carte Tiers" 
+  [(visible)]="ajouterCarte" 
+  [modal]="true" 
+  [style]="{ width: '40vw' }" 
+  [draggable]="false" 
+  [resizable]="false"
+>
+  <div class="col-12">
+    <h5>Sélectionner un client</h5>
+    <!-- Utilisation d'un input text pour l'ID du client -->
+    <input 
+      type="text" 
+      pInputText 
+      [(ngModel)]="selectedClientId" 
+      placeholder="ID du Client" 
+      name="clientId"
+    >
+    <!-- Commentaire: Il serait préférable d'utiliser un dropdown ici si vous avez la liste des clients -->
+    <!--
+    <p-dropdown 
+      [options]="clients" 
+      [(ngModel)]="selectedClientId" 
+      optionLabel="name_client" 
+      placeholder="Sélectionner un client"
+    ></p-dropdown>
+    -->
+
+    <br>
+
+    <h5>Importer une image</h5>
+    <!-- Composant pour uploader des fichiers -->
+    <p-fileUpload
+      name="file"
+      [showUploadButton]="false"
+      cancelLabel="Annuler"
+      chooseLabel="Choisir un fichier"
+      (onSelect)="getFileUpload($event)"
+      [multiple]="false"
+      accept="image/*"
+    ></p-fileUpload>
+    
+    <div class="text-center mt-4">
+      <!-- Bouton pour ajouter ou modifier une carte -->
+      <p-button 
+        icon="pi pi-check" 
+        label="{{ isEditMode ? 'Modifier' : 'Ajouter' }}" 
+        (click)="isEditMode ? updateCarte() : addCarte()" 
+        severity="info"
+      ></p-button>
     </div>
-  </p-dialog>
-  
+  </div>
+</p-dialog>
