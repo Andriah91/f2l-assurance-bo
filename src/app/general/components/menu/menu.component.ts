@@ -45,14 +45,7 @@ export class MenuComponent implements OnInit {
        
         {
           label: "Carte tiers",
-<<<<<<< Updated upstream
-          icon: "pi pi-fw pi-images",
-<<<<<<< Updated upstream
-=======
           icon: "pi pi-fw pi-id-card",
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
           routerLink: ["/manager/cartes"],
         }
       ],

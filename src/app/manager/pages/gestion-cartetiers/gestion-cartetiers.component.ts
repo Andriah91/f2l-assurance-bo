@@ -11,7 +11,7 @@ interface Client {
 }
 
 interface Carte {
-<<<<<<< Updated upstream
+
   id: number;
   titre: string;
   path: string;
@@ -23,11 +23,7 @@ interface Carte {
   updated_at: string | null;
   deleted_at: string | null;
   client?: Client | null; // 'client' peut être null ou absent
-=======
-  id: string;
-  client_id: string;
-  path: string;
->>>>>>> Stashed changes
+
 }
 
 @Component({

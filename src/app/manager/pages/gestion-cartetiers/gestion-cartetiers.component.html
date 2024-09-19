@@ -1,5 +1,5 @@
 <div class="grid p-fluid">
-<<<<<<< Updated upstream
+
   <div class="col-12">
     <div class="card">
       <div class="container">
@@ -92,65 +92,7 @@
       <div class="border-round border-1 surface-border p-4" *ngIf="skeleton">
         <div class="my-2">
           <p-skeleton width="100%" height="4rem"></p-skeleton>
-=======
-    <div class="col-12">
-      <div class="card">
-        <div class="container">
-          <h5 class="title" style="margin-bottom: 10px;">Liste des Cartes Tiers</h5>
-        </div>
-        <br>
-        <div class="container">
-          <div class="title">
-            <app-search
-        
-            [keyword]=""
-            ></app-search>
-          </div>
-          <p-button label="Ajouter" icon="pi pi-plus" severity="success" (click)="openAddCarte()"></p-button>
-        </div>
-        <br>
-        <p-toast></p-toast>
-        <p-confirmDialog key="positionDialog"></p-confirmDialog>
-        <ngx-spinner [name]="'spinnerLoader'" bdColor="rgb(0, 0, 0, 0.8)" size="medium" color="#fff" type="square-jelly-box"
-          [fullScreen]="true">
-          <p style="color: white">Chargement...</p>
-        </ngx-spinner>
-        
-        <!-- Table des Cartes -->
-        <p-table [value]="cartes" dataKey="clientName" responsiveLayout="scroll">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Nom du Client</th>
-              <th>Image</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-carte>
-            <tr>
-              <td>{{ carte.client_id }}</td>
-              <td><img [src]="carte.path" alt="Carte Image" width="50"></td>
-              <td>
-                <div class="flex">
-                  <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-info mr-2"
-                    (click)="editCarte(carte)"></button>
-                  <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
-                    (click)="deleteCarte(carte.id, $event)"></button>
-                </div>
-              </td>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td colspan="3">Aucune carte disponible.</td>
-            </tr>
-          </ng-template>
-        </p-table>
-  
-        <!-- Skeleton pour chargement -->
-        <div class="border-round border-1 surface-border p-4" *ngIf="skeleton">
-          <div class="my-2">
-            <p-skeleton width="100%" height="4rem"></p-skeleton>
-          </div>
->>>>>>> Stashed changes
+
         </div>
       </div>
     </div>
