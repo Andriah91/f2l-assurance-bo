@@ -48,6 +48,7 @@ import { GestionAdministrateurComponent } from './pages/gestion-administrateur/g
 import { GestionNotificationComponent } from './pages/gestion-notification/gestion-notification.component';
 import { GestionPubComponent } from './pages/gestion-pub/gestion-pub.component';
 import { TruncatePipe } from '../truncate.pipe';
+import { GestionCartetiersComponent } from './pages/gestion-cartetiers/gestion-cartetiers.component';
 
 @NgModule({
     imports: [
@@ -100,7 +101,8 @@ import { TruncatePipe } from '../truncate.pipe';
         GestionAdministrateurComponent,
         GestionServicesComponent,
         GestionNotificationComponent,
-        GestionPubComponent
+        GestionPubComponent,
+       GestionCartetiersComponent
     ],
     providers: [ConfirmationService, MessageService, NgxSpinnerService, DatePipe ],
 })

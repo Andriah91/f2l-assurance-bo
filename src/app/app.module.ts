@@ -1,5 +1,5 @@
 import { MessageService } from 'primeng/api';
-import { NgModule,CUSTOM_ELEMENTS_SCHEMA  } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { PathLocationStrategy, LocationStrategy } from '@angular/common';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -15,29 +15,31 @@ import { PhotoService } from './demo/service/photo.service';
 import { AuthInterceptor } from './manager/interceptors/auth.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorInterceptor } from './manager/interceptors/error.interceptor';
-import { ToastModule } from 'primeng/toast';  
+import { ToastModule } from 'primeng/toast';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
-    declarations: [AppComponent, NotfoundComponent],
-    imports: [AppRoutingModule, AppLayoutModule],
-  
-    providers: [
-        { provide: LocationStrategy, useClass: PathLocationStrategy },
-        CountryService,
-        CustomerService,
-        EventService,
-        IconService,
-        NodeService,
-        PhotoService,
-        ProductService,
-        ToastModule,
-        
-        MessageService,
-        
-        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-      { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
-    ],
-    bootstrap: [AppComponent],
+  declarations: [AppComponent, NotfoundComponent],
+  imports: [AppRoutingModule, AppLayoutModule],
+
+  providers: [
+    { provide: LocationStrategy, useClass: PathLocationStrategy },
+    CountryService,
+    CustomerService,
+    EventService,
+    IconService,
+    NodeService,
+    PhotoService,
+    ProductService,
+    ToastModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MessageService,
+
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

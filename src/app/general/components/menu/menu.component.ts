@@ -41,10 +41,17 @@ export class MenuComponent implements OnInit {
           label: "Gestion publicité",
           icon: "pi pi-fw pi-images",
           routerLink: ["/manager/pub"],
+        },
+       
+        {
+          label: "Carte tiers",
+          icon: "pi pi-fw pi-id-card",
+          routerLink: ["/manager/cartes"],
         }
       ],
       
     };
+
 
     this.typeMenu == "manager";
     data = menuManager;

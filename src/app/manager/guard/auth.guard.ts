@@ -13,12 +13,13 @@ export class AuthGuard implements CanActivate {
     ) {}
     canActivate(): boolean {
         let user = this.userService.findUser();
-        
         if (user && user.is_admin == 1) {
+
         //if (user) {
+        
             return true;
         } else {
-            this.router.navigate(['/auth/login']);
+           this.router.navigate(['/auth/login']);
             return false;
         }
     }
