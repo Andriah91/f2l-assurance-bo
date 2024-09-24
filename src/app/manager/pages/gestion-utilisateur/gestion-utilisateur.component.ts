@@ -28,6 +28,8 @@ export class GestionServicesComponent implements OnInit {
   currentPage=1;
   totalPages=0;
 
+   modalCreateCard: boolean = false;
+
   lastValisation:number=2;
 
   users: any[] = [];
@@ -51,6 +53,12 @@ export class GestionServicesComponent implements OnInit {
     { status: true, value: 1 },
     { status: false, value: 0 },
   ];
+  carteBody = {
+    titre: "",
+    path: "", 
+    is_active:0,
+    user_id:0
+  };
 
 
   checked: boolean = false;
@@ -95,9 +103,19 @@ export class GestionServicesComponent implements OnInit {
         'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
       ],
       dayNamesMin: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
-    });
-
+    }); 
     
+  }
+  
+  showModalCreateCard() {
+    this.clearForm();
+    this.modalCreateCard = true;
+  }
+
+  createCard(user : any){ 
+    this.router.navigate(['/manager/carte']); 
+    localStorage.setItem('userCard', JSON.stringify(user));
+
   }
 
   openAddContrat(id: any) {

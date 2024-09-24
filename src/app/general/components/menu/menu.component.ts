@@ -35,12 +35,16 @@ export class MenuComponent implements OnInit {
           label: "Gestion notification",
           icon: "pi pi-fw pi-bell",
           routerLink: ["/manager/notification"],
-        },
-       
+        }, 
         {
           label: "Gestion publicité",
           icon: "pi pi-fw pi-images",
           routerLink: ["/manager/pub"],
+        },
+        {
+          label: "Gestion carte",
+          icon: "pi pi-fw pi-map",
+          routerLink: ["/manager/carte"],
         }
       ],
       

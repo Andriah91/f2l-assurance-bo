@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  margin: 0;
+}
+
+.bordering {
+  border: 1px solid #000;  
+  padding: 10px;         
+  border-radius: 5px;    
+}
+

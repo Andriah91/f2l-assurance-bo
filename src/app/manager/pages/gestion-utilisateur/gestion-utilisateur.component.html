@@ -51,11 +51,17 @@
             </td>
             <td>
               <div class="flex">
+                <!--button pButton pRipple icon="pi pi-map" class="p-button-rounded p-button-danger mr-2"
+                (click)="showModalCreateCard()"-->
+                <button pButton pRipple icon="pi pi-map" class="p-button-rounded p-button-danger mr-2"
+                (click)="createCard(user)">
+              </button>
                 <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info mr-2"
                   (click)="getDEtailsUsers(user.id)"></button>
                 <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
                   (click)="deleteUser(user.id, $event)">
                 </button>
+               
               </div>
             </td>
           </tr>
@@ -236,5 +242,51 @@
   <ng-template pTemplate="footer">
     <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Ajouter" (click)="createContrat()"
       [disabled]="disableUpdate"></button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="modalCreateCard" header="Nouvelle carte" [modal]="true" [style]="{width:'40%'}" position="top"> 
+  <ng-template pTemplate="content">
+    <div class="col-12 md:col-12">
+    
+      <div>
+        <h5>Titre de la carte</h5>
+        <input type="text" pInputText [(ngModel)]="carteBody.titre" >  
+          <br>
+          <br>
+          <p-fileUpload [showUploadButton]="false" cancelLabel="Annuler" chooseLabel="Choisir un fichier" name="demo[]"
+            (onSelect)="getFileUpload($event)" (onUpload)="onUpload()" [multiple]="true" accept="image/*"
+          >
+            <ng-template let-mail pTemplate="file"></ng-template>
+            <ng-template pTemplate="content">
+              <div class="grid" *ngFor="let file of f">
+                <div class="col-1"></div>
+                <div class="col-9">
+                    <li>{{ file.name }} - {{ file.size }} bytes</li>
+                </div>
+                <div class="col-2">
+                  <i class="pi pi-times" (click)="removeFile(file)"></i>
+                </div>
+              </div>
+            
+              <!--div class="text-center">
+                <h5>Valider / Desactiver</h5>
+                <p-inputSwitch [ngModel]="checked" (ngModelChange)="oneCheckValid($event)"></p-inputSwitch>
+              </div-->
+              <br>
+              <div class="text-center">
+                <p-button icon="pi pi-check" label="Valider" (click)="onUpload()" severity="info"></p-button>
+              </div>
+            </ng-template>
+          </p-fileUpload>
+          
+          <br>
+        
+      </div>
+      <br>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    
   </ng-template>
 </p-dialog>
