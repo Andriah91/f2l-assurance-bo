@@ -29,6 +29,11 @@ export class ServiceService {
     return this.http.post(`${environment.url}/api/searchPub`, data);
   }
 
+  getAllCartes(data:any): any {
+    return this.http.post(`${environment.url}/api/searchcartes`, data);
+  }
+
+
   getAllContrat(id: any): any {
     return this.http.get(`${environment.url}/api/contrats/${id}`, id);
   }
@@ -158,14 +163,27 @@ export class ServiceService {
     return this.http.post(`${environment.url}/api/banieres/info`, data);
   }
 
+  updateCard(data: any) {
+    return this.http.post(`${environment.url}/api/cartes/info`, data);
+  }
+
   registerPublicity(data: any) {
     return this.http.post<any>(`${environment.url}/api/banieres`, data);
+  }
+  registerCard(data: any) {
+    return this.http.post<any>(`${environment.url}/api/cartes`, data);
   }
 
   deletePublicity(id: any) {
     return this.http.delete(`${environment.url}/api/banieres/${id}`, id);
   }
+  deleteCard(id: any) {
+    return this.http.delete(`${environment.url}/api/cartes/${id}`, id);
+  }
   getDetailsPub(id: any): any {
     return this.http.get(`${environment.url}/api/banieres/${id}`, id);
+  }
+  getDetailsCard(id: any): any {
+    return this.http.get(`${environment.url}/api/cartes/${id}`, id);
   }
 }

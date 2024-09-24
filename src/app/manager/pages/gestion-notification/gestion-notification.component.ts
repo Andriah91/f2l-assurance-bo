@@ -37,6 +37,15 @@ export class GestionNotificationComponent implements OnInit {
   totalPages=0;
   f: any[] = [];
 
+  keyWordUser : string="";
+  offsetUser:number=0;
+  limitUser:number= this.dataNumberShow;
+
+  sendingType!: string;
+  isVisible: boolean=false;
+  users: any[] = []; 
+  selectedUsers: any[] = []; 
+
   notifs: any[] = [];
   detailUser = {
     first_name: "",
@@ -79,8 +88,31 @@ export class GestionNotificationComponent implements OnInit {
   ngOnInit() {
     this.environments = environment;
     this.getAllNotifications();
+    this.getAllUsers();
   }
 
+  getAllUsers() {
+    try {
+      const body = {
+        key: this.keyWordUser,
+        offset: this.offsetUser,
+        limit: this.limitUser
+      };
+
+      this.serviceService.getAllUsers(body).subscribe(
+        (data: any) => {
+          this.users = data.users; 
+        },
+        (error) => {
+          let status = this.statusService.getStatus();
+          this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+          return;
+        }
+      );
+    } catch (error) {
+        console.log(error);
+    }
+  }  
   oneCheckValid(value: any) {
     if (value) {
       this.detailUser.is_valid = 1;
@@ -120,6 +152,14 @@ getFileUpload(event:UploadEvent) {
       this.f.push(file);
   }
 }
+onChoiceChange(choice: string) { 
+  if(choice=="all"){
+    this.isVisible=false;
+  }else{
+    this.isVisible=true;
+  }
+}
+
 
 removeFile(file: any) {
   const index = this.f.indexOf(file);
@@ -140,7 +180,7 @@ openModal(id: any) {
   this.notifBody.title = "";
 }
 
-onUpload() {
+onUpload() {     
   if (this.notifBody.title === "" || this.notifBody.message === "") {
     this.messageService.add({
       severity: "error",
@@ -149,6 +189,13 @@ onUpload() {
     });
     return;
   }
+  if(this.sendingType === undefined || this.selectedUsers.length==0) {
+      this.messageService.add({
+        severity: "error",
+            summary: "",
+            detail: "Veuillez sélectionner le type d'envoi",
+      });
+  } 
   if (this.f.length >1) {
     this.messageService.add({
       severity: "error",

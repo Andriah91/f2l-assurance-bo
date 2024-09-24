@@ -47,7 +47,8 @@ import { PasswordModule } from 'primeng/password';
 import { GestionAdministrateurComponent } from './pages/gestion-administrateur/gestion-administrateur.component';
 import { GestionNotificationComponent } from './pages/gestion-notification/gestion-notification.component';
 import { GestionPubComponent } from './pages/gestion-pub/gestion-pub.component';
-import { TruncatePipe } from '../truncate.pipe';
+import { TruncatePipe } from '../truncate.pipe'; 
+import { GestionCarteComponent } from './pages/gestion-carte/gestion-carte.component';
 
 @NgModule({
     imports: [
@@ -100,7 +101,8 @@ import { TruncatePipe } from '../truncate.pipe';
         GestionAdministrateurComponent,
         GestionServicesComponent,
         GestionNotificationComponent,
-        GestionPubComponent
+        GestionCarteComponent,
+        GestionPubComponent 
     ],
     providers: [ConfirmationService, MessageService, NgxSpinnerService, DatePipe ],
 })

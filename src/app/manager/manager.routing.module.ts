@@ -6,7 +6,8 @@ import { GestionPersonnelComponent } from "./pages/gestion-contrat/gestion-contr
 import { GestionServicesComponent } from "./pages/gestion-utilisateur/gestion-utilisateur.component";
 import { NgModule } from "@angular/core";
 import { GestionAdministrateurComponent } from "./pages/gestion-administrateur/gestion-administrateur.component";
-import { GestionPubComponent } from './pages/gestion-pub/gestion-pub.component';
+import { GestionPubComponent } from './pages/gestion-pub/gestion-pub.component'; 
+import { GestionCarteComponent } from './pages/gestion-carte/gestion-carte.component';
 
 const routes: Routes = [
   {
@@ -32,6 +33,10 @@ const routes: Routes = [
       {
         path: "pub", 
         component: GestionPubComponent,
+      }, 
+      {
+        path: "carte", 
+        component: GestionCarteComponent,
       },
       {
         path: "",

@@ -141,8 +141,49 @@
         <input type="text" pInputText [(ngModel)]="notifBody.title" >
         <h5>Message</h5>
         <textarea rows="5" cols="30" pInputTextarea [(ngModel)]="notifBody.message"></textarea>
-       
-          <br>
+        <br>
+        <br>
+        <h5>Type d'envoi</h5> 
+        <div class="card flex justify-content-center">
+          <div class="flex flex-wrap gap-3">
+              <div class="flex align-items-center">
+                  <p-radioButton 
+                      name="pizza" 
+                      value="all" 
+                      [(ngModel)]="sendingType" 
+                      (ngModelChange)="onChoiceChange($event)" 
+                      inputId="ingredient1" />
+                  <label for="ingredient1" class="ml-2">
+                      Tous
+                  </label>
+              </div> 
+              
+              <div class="flex align-items-center">
+                  <p-radioButton 
+                      name="pizza" 
+                      value="spec" 
+                      [(ngModel)]="sendingType" 
+                      (ngModelChange)="onChoiceChange($event)" 
+                      inputId="ingredient4" />
+                  <label for="ingredient4" class="ml-2">
+                      Spécifié
+                  </label>
+              </div>
+          </div>
+      </div> 
+
+      <div class="card flex justify-content-center" *ngIf="isVisible">
+        <p-multiSelect 
+        [options]="users" 
+        [(ngModel)]="selectedUsers" 
+        optionLabel="first_name" 
+        emptyFilterMessage="Aucun utilisateur trouvé"
+        placeholder="Sélectionner les utilisateurs"
+        [showToggleAll]="false"  >
+    </p-multiSelect>
+    
+    </div>
+    
           <p-fileUpload [showUploadButton]="false" cancelLabel="Annuler" chooseLabel="Choisir un fichier" name="demo[]"
             (onSelect)="getFileUpload($event)" (onUpload)="onUpload()" [multiple]="true" accept="image/*"
           >
