@@ -156,6 +156,7 @@
         filterBy="first_name,last_name"
         [filterFields] ="['first_name','last_name']"
         optionLabel="first_name"
+        (onFilter)="handleFilter($event)"
         emptyFilterMessage="Aucun utilisateur trouvé"
         placeholder="Sélectionner les utilisateurs"
         [showToggleAll]="false"  >

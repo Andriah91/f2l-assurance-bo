@@ -33,6 +33,7 @@ export class GestionNotificationComponent implements OnInit {
 
   keyWord : string="";
   dataNumberShow: number= 10;
+  dataNumberShowUser:number=15;
   offset:number=0;
   limit:number= this.dataNumberShow;
   currentPage=1;
@@ -41,7 +42,7 @@ export class GestionNotificationComponent implements OnInit {
 
   keyWordUser : string="";
   offsetUser:number=0;
-  limitUser:number= this.dataNumberShow;
+  limitUser:number= this.dataNumberShowUser ;
 
   sendingType!: string;
   isVisible: boolean=false;
@@ -306,6 +307,13 @@ onUpload() {
 
 
 }
+ handleFilter(event: any) {
+    this.keyWordUser=event.filter;
+    this.offsetUser=0;
+    this.limitUser= this.dataNumberShowUser;
+    this.getAllUsers();
+    this.currentPage = 1
+  }
 
 
   clearForm() {

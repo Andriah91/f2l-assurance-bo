@@ -218,10 +218,7 @@
        
         <br>
         <br>
-       
-       
-
-
+        
         <p-dropdown 
         *ngIf="isVisible"
         [options]="users"
@@ -232,6 +229,7 @@
         optionLabel="first_name"
         [showClear]="true"
         placeholder="Selectionner un client"
+        (onFilter)="handleFilter($event)"
         emptyFilterMessage="Aucun résultat trouvé">
         
        

@@ -42,10 +42,11 @@ export class GestionCarteComponent implements OnInit {
   keyWordUser : string="";  
 
   dataNumberShow: number= 10;
+  dataNumberShowUser:number=15;
   offset:number=0;
   offsetUser:number=0;
   limit:number= this.dataNumberShow;
-  limitUser:number= this.dataNumberShow;
+  limitUser:number= this.dataNumberShowUser;
   currentPage=1;
   totalPages=0;
   f: any[] = [];
@@ -115,6 +116,13 @@ export class GestionCarteComponent implements OnInit {
   ngOnDestroy() { 
     localStorage.removeItem('userCard');
   }
+  handleFilter(event: any) {
+    this.keyWordUser=event.filter;
+    this.offsetUser=0;
+    this.limitUser= this.dataNumberShowUser;
+    this.getAllUsers();
+    this.currentPage = 1
+  }
 
   getAllUsers() { 
     try {
@@ -130,6 +138,8 @@ export class GestionCarteComponent implements OnInit {
           this.totalPages = data.userCount;
           this.getPageNumbers();
           this.skeleton = false;
+         
+     
         },
         (error) => {
           let status = this.statusService.getStatus();
@@ -573,7 +583,6 @@ confirmCloseDialog() {
     }
     
     this.serviceService.getAllCartes(body).subscribe((data: any) => { 
-      console.log(data.cartes);
       this.cartes = data.cartes;
       this.totalPages=data.carteCount;
       this.getPageNumbers();
