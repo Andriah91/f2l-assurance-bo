@@ -410,6 +410,11 @@ export class GestionServicesComponent implements OnInit {
             this.checkDetailsUsers = false;
             this.disableUpdate = false;
             this.spinner.hide("spinnerLoader");
+            this.messageService.add({
+              severity: "success",
+              summary: "Utilisateur modifié avec succès",
+              detail: "",
+            });
           },
           (error) => {
             let status = this.statusService.getStatus();
@@ -431,6 +436,11 @@ export class GestionServicesComponent implements OnInit {
         this.checkDetailsUsers = false;
         this.disableUpdate = false;
         this.spinner.hide("spinnerLoader");
+        this.messageService.add({
+          severity: "success",
+          summary: "Utilisateur modifié avec succès",
+          detail: "",
+        });
       },
       (error) => {
         let status = this.statusService.getStatus();
