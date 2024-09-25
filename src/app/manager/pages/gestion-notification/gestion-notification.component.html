@@ -102,49 +102,20 @@
   </div>
 </div>
 
-<p-dialog [(visible)]="checkDetailsUsers" header="A propos de {{detailUser.first_name}}" [modal]="true"
-  [style]="{width:'40%'}" position="top">
-  <ng-template pTemplate="content">
-    <div class="col-12 md:col-12">
-      <div class="p-formgrid grid">
-        <div class="field col">
-          <h5 htmlFor="Nom">Nom</h5>
-          <input pInputText id="Nom" type="text" [(ngModel)]="detailUser.first_name" />
-        </div>
-        <div class="field col">
-          <h5 htmlFor="Prénom(s)">Prénom(s)</h5>
-          <input pInputText id="Prénom(s)" type="text" [(ngModel)]="detailUser.last_name" />
-        </div>
-      </div>
-      <div>
-     
-        <h5>Email</h5>
-        <input type="text" pInputText [(ngModel)]="detailUser.email">
-       
-      </div>
-      <br>
-     
-    </div>
-  </ng-template>
-  <ng-template pTemplate="footer">
-    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Modifier" (click)="updateUser()"
-      [disabled]="disableUpdate"></button>
-  </ng-template>
-</p-dialog>
 
 <p-dialog [(visible)]="modalCreateUser" header="Nouvelle notification" [modal]="true" [style]="{width:'40%'}" position="top">
   <ng-template pTemplate="content">
     <div class="col-12 md:col-12">
     
       <div>
-        <h5>Titre du notification</h5>
+        <h5>Titre de la notification</h5>
         <input type="text" pInputText [(ngModel)]="notifBody.title" >
         <h5>Message</h5>
         <textarea rows="5" cols="30" pInputTextarea [(ngModel)]="notifBody.message"></textarea>
         <br>
         <br>
-        <h5>Type d'envoi</h5> 
-        <div class="card flex justify-content-center">
+        <h5>Envoyer &agrave;</h5> 
+        <div class="card flex">
           <div class="flex flex-wrap gap-3">
               <div class="flex align-items-center">
                   <p-radioButton 
@@ -172,7 +143,7 @@
           </div>
       </div> 
 
-      <div class="card flex justify-content-center" *ngIf="isVisible">
+      <div class="card flex" *ngIf="isVisible">
         <p-multiSelect 
         [options]="users" 
         [(ngModel)]="selectedUsers" 

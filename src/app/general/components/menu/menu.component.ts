@@ -22,28 +22,28 @@ export class MenuComponent implements OnInit {
       label: "",
       items: [
         {
-          label: "Gestion client",
+          label: "Gestion clients",
           icon: "pi pi-fw pi-users",
           routerLink: ["/manager/utilsateur"],
         },
         {
-          label: "Gestion administrateur",
-          icon: "pi pi-fw pi-user",
+          label: "Gestion administrateurs",
+          icon: "pi pi-fw pi-shield",
           routerLink: ["/manager/administrateur"],
         },
         {
-          label: "Gestion notification",
+          label: "Gestion notifications",
           icon: "pi pi-fw pi-bell",
           routerLink: ["/manager/notification"],
         }, 
         {
-          label: "Gestion publicité",
+          label: "Gestion publicités",
           icon: "pi pi-fw pi-images",
           routerLink: ["/manager/pub"],
         },
         {
-          label: "Gestion carte",
-          icon: "pi pi-fw pi-map",
+          label: "Gestion cartes",
+          icon: "pi pi-fw pi-credit-card",
           routerLink: ["/manager/carte"],
         }
       ],

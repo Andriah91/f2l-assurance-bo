@@ -193,14 +193,14 @@ onUpload() {
       this.messageService.add({
         severity: "error",
             summary: "",
-            detail: "Veuillez sélectionner le type d'envoi",
+            detail: "A qui vous voulez envoyer la notification?",
       });
   } 
   if (this.f.length >1) {
     this.messageService.add({
       severity: "error",
           summary: "",
-          detail: "Mettre une seule image",
+          detail: "Mettez une seule image",
     });
     return;
   }

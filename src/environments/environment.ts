@@ -4,8 +4,8 @@
 
 export const environment = {
     production: false,
-    url: 'http://localhost:8000',
-    PATH_URL: 'http://localhost:8000/storage/filaka/',
+    url: 'https://api.app.nexassur.com/public',
+    PATH_URL: 'https://api.app.nexassur.com/public/storage/filaka/',
     url_image: '/assets/img/', 
 };
 
