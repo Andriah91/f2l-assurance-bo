@@ -251,7 +251,7 @@ onUploadUpdate() {
   
   if (this.lastValisation != this.detailCarte.is_active) { 
       let messageValue = ["désactivé", "activé"];
-      this.detailCarte.message="Votre carte a été "+messageValue[this.detailCarte.is_active];
+      this.detailCarte.message="Votre carte tiers "+this.detailCarte.titre+" a été "+messageValue[this.detailCarte.is_active];
       this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: "La carte sera " + messageValue[this.detailCarte.is_active],
