@@ -44,7 +44,7 @@ export class GestionNotificationComponent implements OnInit {
   offsetUser:number=0;
   limitUser:number= this.dataNumberShowUser ;
 
-  sendingType!: string;
+  sendingType: 'all' | 'spec' = "all";
   isVisible: boolean=false;
   users: any[] = []; 
   selectedUsers: any[] = []; 
@@ -104,7 +104,10 @@ export class GestionNotificationComponent implements OnInit {
 
       this.serviceService.getAllUsers(body).subscribe(
         (data: any) => {
-          this.users = data.users; 
+          this.users = data.users.map(u => {
+            u.full_name = u.first_name+' '+u.last_name
+            return u
+          }) 
         },
         (error) => {
           let status = this.statusService.getStatus();
@@ -139,7 +142,7 @@ export class GestionNotificationComponent implements OnInit {
 
 openUrl(event: MouseEvent,url: string) {
   event.preventDefault(); 
-  if(url=="path")
+  if(url=="path" || !url)
     {
       this.messageService.add({
         severity: "error",
@@ -233,10 +236,14 @@ onUpload() {
   {
     var body = {
       title: this.notifBody.title,
-      path: "path",
+      path: "",
       message: this.notifBody.message,
       insert: true
     };
+
+    if(this.sendingType === 'spec')
+      body['users'] = this.selectedUsers;
+
     this.serviceService.registerNotification(body).subscribe(
       () => {
         this.getAllNotifications();

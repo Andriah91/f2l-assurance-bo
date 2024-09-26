@@ -124,7 +124,7 @@
         <h5>Titre</h5>
         <input type="text" pInputText [(ngModel)]="detailCarte.titre" >
         <h5>Nom du client</h5>
-        <input type="text" pInputText [(ngModel)]="detailCarte.user.first_name" [disabled]="true" >
+        <input type="text" pInputText [value]="detailCarte.user.first_name +' '+detailCarte.user.last_name" [disabled]="true" >
         <br>
         <br>
         <!--p-dropdown 
@@ -186,7 +186,7 @@
               <br>
             
               <div class="text-center">
-                <h5>Valider / Desactiver</h5>
+                <h5>Valid&eacute; / Desactiv&eacute;</h5>
                 <p-inputSwitch [ngModel]="checked" (ngModelChange)="oneCheckValidUpdate($event)"></p-inputSwitch> 
               </div>
               <br>

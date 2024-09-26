@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-    production: false,
+    production: true,
     url: 'https://api.app.nexassur.com/public',
     PATH_URL: 'https://api.app.nexassur.com/public/storage/filaka/', 
     url_image: '/assets/img/', 
