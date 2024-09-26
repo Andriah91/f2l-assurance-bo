@@ -102,7 +102,7 @@ export class GestionNotificationComponent implements OnInit {
         limit: this.limitUser
       };
 
-      this.serviceService.getAllUsers(body).subscribe(
+      this.serviceService.getAllClients(body).subscribe(
         (data: any) => {
           this.users = data.users.map(u => {
             u.full_name = u.first_name+' '+u.last_name

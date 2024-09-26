@@ -17,6 +17,10 @@ export class ServiceService {
     return this.http.post(`${environment.url}/api/searchUser`, data);
   }
 
+  getAllClients(data:any): any {
+    return this.http.post(`${environment.url}/api/searchClient`, data);
+  }
+
   getAllAdmins(data:any): any {
     return this.http.post(`${environment.url}/api/searchAdmin`, data);
   }

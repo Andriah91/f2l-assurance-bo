@@ -132,7 +132,7 @@ export class GestionCarteComponent implements OnInit {
         limit: this.limitUser
       };
 
-      this.serviceService.getAllUsers(body).subscribe(
+      this.serviceService.getAllClients(body).subscribe(
         (data: any) => {
           this.users = data.users; 
           this.totalPages = data.userCount;
