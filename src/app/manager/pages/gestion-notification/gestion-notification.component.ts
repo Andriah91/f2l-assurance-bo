@@ -328,6 +328,9 @@ onUpload() {
     this.notifBody.title = "";
     this.notifBody.path = "";
     this.isFileUploaded=false;
+    this.f = [];
+    this.sendingType = 'all';
+    this.isVisible=false;
   }
 
   searchNotifications(key)

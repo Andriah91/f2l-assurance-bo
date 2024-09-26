@@ -80,7 +80,7 @@ export class GestionCarteComponent implements OnInit {
   carteBody = {
     titre: "",
     path: "", 
-    is_active:0,
+    is_active:1,
     user_id:0
   };
   modalCreateUser: boolean = false;
@@ -531,7 +531,8 @@ confirmCloseDialog() {
     this.selectedUser=null;
     this.isFileUploaded=false;
     this.carteBody.titre = ""; 
-   this.carteBody.is_active = 0;
+    this.f = [];
+   this.carteBody.is_active = 1;
   }
 
   clearUserCard()
