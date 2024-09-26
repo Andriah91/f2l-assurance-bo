@@ -33,21 +33,29 @@ export class GestionCarteComponent implements OnInit {
    userCard: any;
    isVisible : boolean=true;
    userCardName : string ="";
+   isDropdownDisabled = false;
+   isFileUploaded:boolean=false;
+
+   lastValisation:number=2;
 
   keyWord : string="";
   keyWordUser : string="";  
 
   dataNumberShow: number= 10;
+  dataNumberShowUser:number=15;
   offset:number=0;
   offsetUser:number=0;
   limit:number= this.dataNumberShow;
-  limitUser:number= this.dataNumberShow;
+  limitUser:number= this.dataNumberShowUser;
   currentPage=1;
   totalPages=0;
   f: any[] = [];
 
   users: any[] = [];
   selectedUser: any = null;
+
+  usersDetails: any[] = [];
+  selectedUserDetails: any = null;
 
   cartes: any[] = [];
   detailCarte = {
@@ -56,11 +64,9 @@ export class GestionCarteComponent implements OnInit {
     path: "", 
     first_name:"",
     is_active: 0, 
-  };
-  isAdmin = [
-    { name: "Admin", value: 1 },
-    { name: "Client", value: 0 },
-  ];
+     message:"",
+     title:"Status de la carte"
+  }; 
   isValid = [
     { status: true, value: 1 },
     { status: false, value: 0 },
@@ -96,7 +102,7 @@ export class GestionCarteComponent implements OnInit {
     if(localStorage.getItem("userCard")!=null){
         this.userCard = JSON.parse(localStorage.getItem('userCard') || '{}');  
         this.isVisible=false;
-        this.userCardName="de "+this.userCard.first_name;
+        this.userCardName="de "+this.userCard.first_name+" "+this.userCard.last_name ;
         this.users.push(this.userCard);  
         this.showModalCreateUser(); 
     } else{
@@ -104,16 +110,18 @@ export class GestionCarteComponent implements OnInit {
     }
    
     this.environments = environment;
-    this.getAllCard(); 
+    this.getAllCard();  
 
-   /* this.users = [
-      { name: 'Australia'  },
-      { name: 'Brazil'  },
-      { name: 'China'  }
-  ];*/
   }
   ngOnDestroy() { 
     localStorage.removeItem('userCard');
+  }
+  handleFilter(event: any) {
+    this.keyWordUser=event.filter;
+    this.offsetUser=0;
+    this.limitUser= this.dataNumberShowUser;
+    this.getAllUsers();
+    this.currentPage = 1
   }
 
   getAllUsers() { 
@@ -130,6 +138,8 @@ export class GestionCarteComponent implements OnInit {
           this.totalPages = data.userCount;
           this.getPageNumbers();
           this.skeleton = false;
+         
+     
         },
         (error) => {
           let status = this.statusService.getStatus();
@@ -144,6 +154,7 @@ export class GestionCarteComponent implements OnInit {
 
   showModalCreateUser() {
     this.clearForm();
+    this.isFileUploaded=false;
     this.modalCreateUser = true;
   }
 
@@ -170,25 +181,52 @@ openLink(event: MouseEvent,url: string)
   window.open(url, "_blank");
 }
 getFileUpload(event:UploadEvent) {
+  if(event.files.length>1){
+    this.messageService.add({
+      severity: "error",
+          summary: "",
+          detail: "Vous ne pouvez sélectionner qu'un seul fichier.",
+    });
+    this.f = [];
+    return;
+  }
   for(let file of event.files) {
       this.f.push(file);
   }
+ this.setFileDisabled();
+} 
+onCancel(){
+  this.f = [];
+  this.setFileDisabled();
 }
-getDetailsCarte(id: any) { 
-  this.checkDetailsCard = true;
-  this.serviceService.getDetailsCard(id).subscribe((data: any) => {
-    this.detailCarte = data.carte;  
-    this.selectedUser=data.carte;  
-    this.checked = this.detailCarte.is_active=== 1;
-  });
-}
-
 removeFile(file: any) {
   const index = this.f.indexOf(file);
   if (index !== -1) {
     this.f.splice(index, 1);
   }
+  this.setFileDisabled();
 }
+setFileDisabled(){
+  if(this.f.length>=1){
+    this.isFileUploaded=true;
+  }else{
+    this.isFileUploaded=false;
+  } 
+}
+getDetailsCarte(id: any) { 
+  this.lastValisation=2;
+  this.checkDetailsCard = true;
+  this.serviceService.getDetailsCard(id).subscribe((data: any) => { 
+     this.usersDetails=[];
+    this.usersDetails.push(data.carte.user);
+    this.detailCarte = data.carte;  
+    this.selectedUser=this.usersDetails[0];  
+    this.checked = this.detailCarte.is_active=== 1;
+    this.lastValisation=this.detailCarte.is_active;
+  });
+}
+
+ 
 
 getFilePath(file: string) {
   return file.split("public/filaka/")[1];
@@ -211,7 +249,7 @@ getImageType(path:any)
     return path.split(".")[1];
 }
 
-onUploadUpdate() { 
+onUploadUpdate() {  
   if (this.detailCarte.titre === "") {
     this.messageService.add({
       severity: "error",
@@ -221,86 +259,178 @@ onUploadUpdate() {
     return;
   }
   
-  if(this.f.length>1){
-    this.messageService.add({
-      severity: "error",
-          summary: "",
-          detail: "Mettre une image",
-    });
-    return;
-  }else if (this.f.length ==0) { 
-    this.disableUpdate = true;
-    this.spinner.show("spinnerLoader");
-    this.serviceService.updateCard(this.detailCarte).subscribe(() => {
-      this.getAllCard();
-      this.f = [];
-      this.clearDetail;
-      this.checkDetailsCard = false;
-      this.disableUpdate = false;
-      this.messageService.add({
-        severity: "success",
-        summary: "Carte modifiée avec succès",
-        detail: "",
-      });
-      this.spinner.hide("spinnerLoader");
-    },
-    (error) => {
-      let status = this.statusService.getStatus();
-      this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
-      this.spinner.hide("spinnerLoader");
-      return;
-    }
-    );
-  }else if (this.f.length ==1) { 
-    const uploadData = new FormData();
-    for (let i = 0; i < this.f.length; i++) {
-      uploadData.append("fichier[]", this.f[i], this.f[i].name);
-    }
-  
-    this.spinner.show("spinnerLoader");
-    this.serviceService.upload(uploadData).subscribe(
-      (data) => {
-        if (data.message === "success") {
-          for (let index = 0; index < data.paths.length; index++) {
-            var body = {
-              id:this.detailCarte.id,
-              titre: this.detailCarte.titre,
-              path: this.getFilePath(data.paths[index]), 
-              type: this.getImageType(this.getFilePath(data.paths[index])),
-              is_active:this.detailCarte.is_active
-            };
-  
-            this.serviceService.updateCard(body).subscribe(() => {
-              this.getAllCard();
-              this.f = [];
-              this.clearDetail;
-              this.checkDetailsCard = false;
-              this.disableUpdate = false;
-              this.messageService.add({
-                severity: "success",
-                summary: "Carte modifiée avec succès",
-                detail: "",
-              });
-              this.spinner.hide("spinnerLoader");
+  if (this.lastValisation != this.detailCarte.is_active) { 
+      let messageValue = ["désactivé", "activé"];
+      this.detailCarte.message="Votre carte tiers "+this.detailCarte.titre+" a été "+messageValue[this.detailCarte.is_active];
+      this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: "La carte sera " + messageValue[this.detailCarte.is_active],
+      header: "Confirmer?",
+      icon: "pi pi-info-circle",
+      acceptButtonStyleClass: "p-button-danger p-button-text",
+      rejectButtonStyleClass: "p-button-text p-button-text",
+      acceptIcon: "none",
+      rejectIcon: "none",
+      acceptLabel: "Oui",
+      rejectLabel: "Non",
+      accept: () => {
+        if(this.f.length==0){
+          this.disableUpdate = true;
+          this.spinner.show("spinnerLoader"); 
+          this.serviceService.cardStateNotification(this.detailCarte).subscribe(() => {
+            this.getAllCard();
+            this.checkDetailsCard = false;
+            this.disableUpdate = false;
+            this.spinner.hide("spinnerLoader");
+            this.messageService.add({
+              severity: "success",
+              summary: "Carte modifiée avec succès",
+              detail: "",
+            });
+          },
+          (error) => {
+            let status = this.statusService.getStatus();
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: status });
+            this.spinner.hide("spinnerLoader");
+            return;
+          });
+        }else{
+          const uploadData = new FormData();
+          for (let i = 0; i < this.f.length; i++) {
+            uploadData.append("fichier[]", this.f[i], this.f[i].name);
+          }
+        
+          this.spinner.show("spinnerLoader");
+          this.serviceService.upload(uploadData).subscribe(
+            (data) => {
+              if (data.message === "success") {
+                for (let index = 0; index < data.paths.length; index++) {
+                  var body = {
+                    id:this.detailCarte.id,
+                    titre: this.detailCarte.titre,
+                    path: this.getFilePath(data.paths[index]), 
+                    type: this.getImageType(this.getFilePath(data.paths[index])),
+                    is_active:this.detailCarte.is_active,
+                    message: this.detailCarte.message,
+                    title: this.detailCarte.title, 
+                  };
+        
+                  this.serviceService.cardStateNotification(body).subscribe(() => {
+                    this.getAllCard();
+                    this.f = [];
+                    this.clearDetail();
+                    this.checkDetailsCard = false;
+                    this.disableUpdate = false;
+                    this.messageService.add({
+                      severity: "success",
+                      summary: "Carte modifiée avec succès",
+                      detail: "",
+                    });
+                    this.spinner.hide("spinnerLoader");
+                  },
+                  (error) => {
+                    let status = this.statusService.getStatus();
+                    this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+                    this.spinner.hide("spinnerLoader");
+                    return;
+                  }
+                  );
+                }
+              }
             },
             (error) => {
               let status = this.statusService.getStatus();
               this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
-              this.spinner.hide("spinnerLoader");
-              return;
             }
-            );
-          }
+          );
         }
+       
+       
+      },
+      reject: () => {
+        return;
+      },
+      
+    });
+    
+    
+  } else {  
+    if(this.f.length==0){
+      this.disableUpdate = true;
+      this.spinner.show("spinnerLoader");
+      this.serviceService.updateCard(this.detailCarte).subscribe(() => {
+        this.getAllCard();
+        this.checkDetailsCard = false;
+        this.disableUpdate = false;
+        this.spinner.hide("spinnerLoader");
+        this.messageService.add({
+          severity: "success",
+          summary: "Carte modifiée avec succès",
+          detail: "",
+        });
       },
       (error) => {
         let status = this.statusService.getStatus();
-        this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: status });
+        this.spinner.hide("spinnerLoader");
+        return;
+      });
+    }else{
+      const uploadData = new FormData();
+      for (let i = 0; i < this.f.length; i++) {
+        uploadData.append("fichier[]", this.f[i], this.f[i].name);
       }
-    );
-  } 
+    
+      this.spinner.show("spinnerLoader");
+      this.serviceService.upload(uploadData).subscribe(
+        (data) => {
+          if (data.message === "success") {
+            for (let index = 0; index < data.paths.length; index++) {
+              var body = {
+                id:this.detailCarte.id,
+                titre: this.detailCarte.titre,
+                path: this.getFilePath(data.paths[index]), 
+                type: this.getImageType(this.getFilePath(data.paths[index])),
+                is_active:this.detailCarte.is_active
+              };
+    
+              this.serviceService.updateCard(body).subscribe(() => {
+                this.getAllCard();
+                this.f = [];
+                this.clearDetail();
+                this.checkDetailsCard = false;
+                this.disableUpdate = false;
+                this.messageService.add({
+                  severity: "success",
+                  summary: "Carte modifiée avec succès",
+                  detail: "",
+                });
+                this.spinner.hide("spinnerLoader");
+              },
+              (error) => {
+                let status = this.statusService.getStatus();
+                this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+                this.spinner.hide("spinnerLoader");
+                return;
+              }
+              );
+            }
+          }
+        },
+        (error) => {
+          let status = this.statusService.getStatus();
+          this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+        }
+      );
+    }
+   
+  }
+   
+  
 
   } 
+
+
 onUpload() {   
   
   if (this.carteBody.titre === "") {
@@ -361,7 +491,7 @@ onUpload() {
                 this.f = [];
                 this.ajouterDoc = false;
                 this.spinner.hide("spinnerLoader");
-                this.clearForm;
+                this.clearForm();
                 this.modalCreateUser = false; 
                 if(this.userCard!=null){
                    this.clearUserCard();
@@ -399,6 +529,7 @@ confirmCloseDialog() {
 
   clearForm() {
     this.selectedUser=null;
+    this.isFileUploaded=false;
     this.carteBody.titre = ""; 
    this.carteBody.is_active = 0;
   }
@@ -416,6 +547,7 @@ confirmCloseDialog() {
     this.selectedUser=null;
     this.detailCarte.titre = ""; 
    this.detailCarte.is_active = 0;
+   this.isFileUploaded=false;
   }
 
   searchCard(key)
@@ -451,7 +583,6 @@ confirmCloseDialog() {
     }
     
     this.serviceService.getAllCartes(body).subscribe((data: any) => { 
-      console.log(data.cartes);
       this.cartes = data.cartes;
       this.totalPages=data.carteCount;
       this.getPageNumbers();

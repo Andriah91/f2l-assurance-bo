@@ -24,16 +24,21 @@
         <ng-template pTemplate="header">
           <tr>
             <th style="width: 15%;">Titre </th>
-            <th style="width: 30%;">Message</th>
+            <th style="width: 15%;">Image</th>
+            <th style="width: 20%;">Message</th>
+            <th style="width: 15%;">Date d'envoi</th>
             <th style="width: 7%;"></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-notif let-expanded="expanded">
-          <tr>
-          
-            <td><a href="#" (click)="openUrl($event,notif.path)">{{ notif.title }}</a></td>
-            <td>{{notif.message}}</td>
-          
+          <tr> 
+            <td>{{ notif.title }}</td>
+            <td> <a  href="#" (click)="openUrl($event,notif.path)"><img  [src]="this.pathUrl+notif.path" width="120" height="75" alt="Pas d'image"></a> </td> 
+            <td>{{notif.message | truncate:30}}</td> 
+            <td>
+              {{ notif.created_at | date:'dd/MM/yyyy HH:mm' }}
+
+            </td>
             <td>
               <div class="flex">
                 <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
@@ -147,16 +152,42 @@
         <p-multiSelect 
         [options]="users" 
         [(ngModel)]="selectedUsers" 
-        optionLabel="first_name" 
+        [filter]="true"  
+        filterBy="first_name,last_name"
+        [filterFields] ="['first_name','last_name']"
+        optionLabel="first_name"
+        (onFilter)="handleFilter($event)"
         emptyFilterMessage="Aucun utilisateur trouvé"
         placeholder="Sélectionner les utilisateurs"
         [showToggleAll]="false"  >
+
+        <ng-template pTemplate="selectedItem" let-selectedOption>
+          <div class="flex align-items-center gap-2">
+            <img 
+              src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+              style="width: 18px" />
+            <div>{{ selectedOption?.first_name }} {{ selectedOption?.last_name }}</div>
+          </div>
+        </ng-template>
+    
+       
+        <ng-template let-clients pTemplate="item">
+          <div class="flex align-items-center gap-2">
+            <img 
+              src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+              style="width: 18px" />
+            <div>{{ clients.first_name }} {{ clients.last_name }}</div>
+          </div>
+        </ng-template>
+
     </p-multiSelect>
     
     </div>
-    
+
+         
           <p-fileUpload [showUploadButton]="false" cancelLabel="Annuler" chooseLabel="Choisir un fichier" name="demo[]"
-            (onSelect)="getFileUpload($event)" (onUpload)="onUpload()" [multiple]="true" accept="image/*"
+            (onSelect)="getFileUpload($event)" (onUpload)="onUpload()" (onClear)="onCancel()" [multiple]="true" accept="image/*"
+            [disabled]="isFileUploaded"
           >
             <ng-template let-mail pTemplate="file"></ng-template>
             <ng-template pTemplate="content">

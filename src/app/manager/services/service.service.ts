@@ -143,6 +143,10 @@ export class ServiceService {
     return this.http.post<any>(`${environment.url}/api/userNotif`, data);
   }
 
+  cardStateNotification(data: any) {
+    return this.http.post<any>(`${environment.url}/api/cardNotif`, data);
+  }
+
   fileStateNotification(data: any) {
     return this.http.post<any>(`${environment.url}/api/fileNotif`, data);
   }

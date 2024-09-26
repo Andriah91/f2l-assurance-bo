@@ -129,8 +129,9 @@
           <br>
           <br>
           <p-fileUpload [showUploadButton]="false" cancelLabel="Annuler" chooseLabel="Choisir un fichier" name="demo[]"
-            (onSelect)="getFileUpload($event)" (onUploadUpdate)="onUploadUpdate()" [multiple]="true" accept="image/*"
-          >
+          (onSelect)="getFileUpload($event)" (onUpload)="onUpload()" (onClear)="onCancel()" [multiple]="true" accept="image/*"
+          [disabled]="isFileUploaded"
+           >
             <ng-template let-mail pTemplate="file"></ng-template>
             <ng-template pTemplate="content">
               <div class="grid" *ngFor="let file of f">
@@ -183,8 +184,9 @@
           <br>
           <br>
           <p-fileUpload [showUploadButton]="false" cancelLabel="Annuler" chooseLabel="Choisir un fichier" name="demo[]"
-            (onSelect)="getFileUpload($event)" (onUpload)="onUpload()" [multiple]="true" accept="image/*"
-          >
+          (onSelect)="getFileUpload($event)" (onUpload)="onUpload()" (onClear)="onCancel()" [multiple]="true" accept="image/*"
+          [disabled]="isFileUploaded"
+           >
             <ng-template let-mail pTemplate="file"></ng-template>
             <ng-template pTemplate="content">
               <div class="grid" *ngFor="let file of f">

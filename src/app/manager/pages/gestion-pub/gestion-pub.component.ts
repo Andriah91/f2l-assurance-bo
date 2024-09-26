@@ -28,6 +28,7 @@ export class GestionPubComponent implements OnInit {
   checkDetailsPub: boolean = false;
   ajouterDoc: boolean = false;
   pathUrl: string;
+  isFileUploaded:boolean=false;
 
   keyWord : string="";
   dataNumberShow: number= 10;
@@ -111,9 +112,37 @@ openLink(event: MouseEvent,url: string)
   window.open(url, "_blank");
 }
 getFileUpload(event:UploadEvent) {
+  if(event.files.length>1){
+    this.messageService.add({
+      severity: "error",
+          summary: "",
+          detail: "Vous ne pouvez sélectionner qu'un seul fichier.",
+    });
+    this.f = [];
+    return;
+  }
   for(let file of event.files) {
       this.f.push(file);
   }
+ this.setFileDisabled();
+} 
+onCancel(){
+  this.f = [];
+  this.setFileDisabled();
+}
+removeFile(file: any) {
+  const index = this.f.indexOf(file);
+  if (index !== -1) {
+    this.f.splice(index, 1);
+  }
+  this.setFileDisabled();
+}
+setFileDisabled(){
+  if(this.f.length>=1){
+    this.isFileUploaded=true;
+  }else{
+    this.isFileUploaded=false;
+  } 
 }
 getDetailsPub(id: any) {
   this.checkDetailsPub = true;
@@ -123,12 +152,7 @@ getDetailsPub(id: any) {
   });
 }
 
-removeFile(file: any) {
-  const index = this.f.indexOf(file);
-  if (index !== -1) {
-    this.f.splice(index, 1);
-  }
-}
+ 
 
 getFilePath(file: string) {
   return file.split("public/filaka/")[1];
@@ -303,7 +327,7 @@ onUpload() {
                 this.f = [];
                 this.ajouterDoc = false;
                 this.spinner.hide("spinnerLoader");
-                this.clearForm;
+                this.clearForm();
                 this.modalCreateUser = false;
                 this.messageService.add({
                   severity: "success",
@@ -333,6 +357,7 @@ onUpload() {
   clearForm() {
     this.pubBody.titre = "";
     this.pubBody.link = "";
+    this.isFileUploaded=false;
    this.pubBody.is_active = 0;
   }
 
@@ -340,6 +365,7 @@ onUpload() {
     this.detailPub.titre = "";
     this.detailPub.link = "";
    this.detailPub.is_active = 0;
+   this.isFileUploaded=false;
   }
 
   searchPublicities(key)

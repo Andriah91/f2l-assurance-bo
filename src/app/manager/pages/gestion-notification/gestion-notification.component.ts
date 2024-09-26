@@ -8,6 +8,7 @@ import { Router } from "@angular/router";
 import { AlertService } from "../../services/alert.service";
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FileUploadModule } from 'primeng/fileupload';
+import { consumerPollProducersForChange } from "@angular/core/primitives/signals";
 interface expandedRows {
   [key: string]: boolean;
 }
@@ -27,10 +28,12 @@ export class GestionNotificationComponent implements OnInit {
   skeleton: boolean = true;
   checkDetailsUsers: boolean = false;
   ajouterDoc: boolean = false;
+  isFileUploaded:boolean=false;
   pathUrl: string;
 
   keyWord : string="";
   dataNumberShow: number= 10;
+  dataNumberShowUser:number=15;
   offset:number=0;
   limit:number= this.dataNumberShow;
   currentPage=1;
@@ -39,7 +42,7 @@ export class GestionNotificationComponent implements OnInit {
 
   keyWordUser : string="";
   offsetUser:number=0;
-  limitUser:number= this.dataNumberShow;
+  limitUser:number= this.dataNumberShowUser ;
 
   sendingType!: string;
   isVisible: boolean=false;
@@ -147,10 +150,39 @@ openUrl(event: MouseEvent,url: string) {
     }
    window.open(this.pathUrl + url, "_blank");
 }
+
 getFileUpload(event:UploadEvent) {
+  if(event.files.length>1){
+    this.messageService.add({
+      severity: "error",
+          summary: "",
+          detail: "Vous ne pouvez sélectionner qu'un seul fichier.",
+    });
+    this.f = [];
+    return;
+  }
   for(let file of event.files) {
       this.f.push(file);
   }
+ this.setFileDisabled();
+} 
+onCancel(){
+  this.f = [];
+  this.setFileDisabled();
+}
+removeFile(file: any) {
+  const index = this.f.indexOf(file);
+  if (index !== -1) {
+    this.f.splice(index, 1);
+  }
+  this.setFileDisabled();
+}
+setFileDisabled(){
+  if(this.f.length>=1){
+    this.isFileUploaded=true;
+  }else{
+    this.isFileUploaded=false;
+  } 
 }
 onChoiceChange(choice: string) { 
   if(choice=="all"){
@@ -158,15 +190,8 @@ onChoiceChange(choice: string) {
   }else{
     this.isVisible=true;
   }
-}
+} 
 
-
-removeFile(file: any) {
-  const index = this.f.indexOf(file);
-  if (index !== -1) {
-    this.f.splice(index, 1);
-  }
-}
 
 getFilePath(file: string) {
   return file.split("public/filaka/")[1];
@@ -282,12 +307,20 @@ onUpload() {
 
 
 }
+ handleFilter(event: any) {
+    this.keyWordUser=event.filter;
+    this.offsetUser=0;
+    this.limitUser= this.dataNumberShowUser;
+    this.getAllUsers();
+    this.currentPage = 1
+  }
 
 
   clearForm() {
     this.notifBody.message = "";
     this.notifBody.title = "";
     this.notifBody.path = "";
+    this.isFileUploaded=false;
   }
 
   searchNotifications(key)
