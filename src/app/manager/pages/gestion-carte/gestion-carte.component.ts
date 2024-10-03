@@ -80,7 +80,7 @@ export class GestionCarteComponent implements OnInit {
   carteBody = {
     titre: "",
     path: "", 
-    is_active:1,
+    is_active:0,
     user_id:0
   };
   modalCreateUser: boolean = false;
@@ -358,7 +358,7 @@ onUploadUpdate() {
     if(this.f.length==0){
       this.disableUpdate = true;
       this.spinner.show("spinnerLoader");
-      this.serviceService.updateCard(this.detailCarte).subscribe(() => {
+      this.serviceService.cardStateNotification(this.detailCarte).subscribe(() => {
         this.getAllCard();
         this.checkDetailsCard = false;
         this.disableUpdate = false;
@@ -394,7 +394,7 @@ onUploadUpdate() {
                 is_active:this.detailCarte.is_active
               };
     
-              this.serviceService.updateCard(body).subscribe(() => {
+              this.serviceService.cardStateNotification(body).subscribe(() => {
                 this.getAllCard();
                 this.f = [];
                 this.clearDetail();
@@ -485,7 +485,7 @@ onUpload() {
               is_active:this.carteBody.is_active
             };
   
-            this.serviceService.registerCard(body).subscribe(
+            this.serviceService.cardStateNotification(body).subscribe(
               () => {
                 this.getAllCard();
                 this.f = [];
@@ -531,8 +531,7 @@ confirmCloseDialog() {
     this.selectedUser=null;
     this.isFileUploaded=false;
     this.carteBody.titre = ""; 
-    this.f = [];
-   this.carteBody.is_active = 1;
+   this.carteBody.is_active = 0;
   }
 
   clearUserCard()
