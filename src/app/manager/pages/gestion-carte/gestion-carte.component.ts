@@ -162,6 +162,7 @@ export class GestionCarteComponent implements OnInit {
     this.clearForm();
     this.isFileUploaded=false;
     this.modalCreateUser = true; 
+    this.checked = false;
   }
 
   isValidEmail(email: string): boolean {
@@ -536,6 +537,7 @@ onUpload() {
     this.isFileUploaded=false;
     this.carteBody.titre = ""; 
    this.carteBody.is_active = 0;
+   this.detailCarte.is_active = 0;
   }
 
   clearUserCard()
