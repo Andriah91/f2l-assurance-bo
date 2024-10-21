@@ -107,15 +107,25 @@ export class GestionServicesComponent implements OnInit {
     
   }
   
-  showModalCreateCard() {
+  showModalCreateCard() { 
     this.clearForm();
     this.modalCreateCard = true;
   }
 
-  createCard(user : any){ 
-    this.router.navigate(['/manager/carte']); 
-    localStorage.setItem('userCard', JSON.stringify(user));
+   addParameter(user:any,value:any) {
+    user["hasCard"] = value;
+    return user;
+  }  
 
+  createCard(user : any){ 
+    var hasCard=false;
+    if(user.cartes.length>0)
+    {
+      hasCard=true;
+    } 
+    this.addParameter(user,hasCard);
+    localStorage.setItem('userCard', JSON.stringify(user)); 
+    this.router.navigate(['/manager/carte']); 
   }
 
   openAddContrat(id: any) {
@@ -311,11 +321,11 @@ export class GestionServicesComponent implements OnInit {
         key: this.keyWord,
         offset: this.offset,
         limit: this.limit
-      };
-
+      }; 
       this.serviceService.getAllUsers(body).subscribe(
-        (data: any) => {
-          this.users = data.users;
+        (data: any) => { 
+          this.users = data.users; 
+          console.log(this.users);
           this.totalPages = data.userCount;
           this.getPageNumbers();
           this.skeleton = false;
