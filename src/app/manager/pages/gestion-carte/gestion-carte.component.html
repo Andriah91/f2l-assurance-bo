@@ -118,7 +118,7 @@
   <ng-template pTemplate="content">
     <div class="col-12 md:col-12">
     
-      <div>
+      <div *ngIf="detailCarte.user">
         <h5>Titre</h5>
         <input type="text" pInputText [(ngModel)]="detailCarte.titre" >
         <h5>Nom du client</h5>

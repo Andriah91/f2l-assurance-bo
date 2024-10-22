@@ -119,7 +119,7 @@ export class GestionServicesComponent implements OnInit {
 
   createCard(user : any){ 
     var hasCard=false;
-    if(user.cartes.length>0)
+    if(user.cartes && user.cartes.length>0)
     {
       hasCard=true;
     } 
