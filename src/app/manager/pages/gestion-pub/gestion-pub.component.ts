@@ -207,7 +207,7 @@ onUploadUpdate() {
     this.serviceService.updatePublicity(this.detailPub).subscribe(() => {
       this.getAllPublicities();
       this.f = [];
-      this.clearDetail;
+      this.clearDetail();
       this.checkDetailsPub = false;
       this.disableUpdate = false;
       this.messageService.add({
@@ -247,7 +247,7 @@ onUploadUpdate() {
             this.serviceService.updatePublicity(body).subscribe(() => {
               this.getAllPublicities();
               this.f = [];
-              this.clearDetail;
+              this.clearDetail();
               this.checkDetailsPub = false;
               this.disableUpdate = false;
               this.messageService.add({
@@ -359,6 +359,7 @@ onUpload() {
     this.pubBody.link = "";
     this.isFileUploaded=false;
    this.pubBody.is_active = 0;
+   this.f = [];
   }
 
   clearDetail() {

@@ -25,11 +25,9 @@
           <tr>
             <th style="width: 10%;">Titre </th> 
             <th style="width: 7%;">Image</th>
-            <!--th style="width: 3%;">Status</th-->  
             <th style="width: 10%;">Client</th>
             <th style="width: 5%;">Status</th>
-            <th style="width: 7%;"></th>
-             
+            <th style="width: 7%;"></th> 
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-carte let-expanded="expanded">
@@ -120,7 +118,7 @@
   <ng-template pTemplate="content">
     <div class="col-12 md:col-12">
     
-      <div>
+      <div *ngIf="detailCarte.user">
         <h5>Titre</h5>
         <input type="text" pInputText [(ngModel)]="detailCarte.titre" >
         <h5>Nom du client</h5>
@@ -214,11 +212,9 @@
     
       <div>
         <h5>Titre de la carte</h5>
-        <input type="text" pInputText [(ngModel)]="carteBody.titre" >
-       
+        <input type="text" pInputText [(ngModel)]="carteBody.titre" > 
         <br>
-        <br>
-        
+        <br> 
         <p-dropdown 
         *ngIf="isVisible"
         [options]="users"
@@ -272,10 +268,10 @@
                 </div>
               </div>
             
-              <!--div class="text-center">
+              <div class="text-center">
                 <h5>Valider / Desactiver</h5>
                 <p-inputSwitch [ngModel]="checked" (ngModelChange)="oneCheckValid($event)"></p-inputSwitch>
-              </div-->
+              </div>
               <br>
               <div class="text-center">
                 <p-button icon="pi pi-check" label="Valider" (click)="onUpload()" severity="info"></p-button>

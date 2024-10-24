@@ -100,11 +100,17 @@ export class GestionCarteComponent implements OnInit {
 
   ngOnInit() { 
     if(localStorage.getItem("userCard")!=null){
-        this.userCard = JSON.parse(localStorage.getItem('userCard') || '{}');  
-        this.isVisible=false;
-        this.userCardName="de "+this.userCard.first_name+" "+this.userCard.last_name ;
-        this.users.push(this.userCard);  
-        this.showModalCreateUser(); 
+        this.userCard = JSON.parse(localStorage.getItem('userCard') || '{}');   
+        if(this.userCard.hasCard)
+        {
+          this.getDetailsCarte(this.userCard.cartes[0].id);
+        }
+        else{
+          this.isVisible=false;
+          this.userCardName="de "+this.userCard.first_name+" "+this.userCard.last_name ;
+          this.users.push(this.userCard);  
+          this.showModalCreateUser(); 
+        }  
     } else{
       this.getAllUsers();
     }
@@ -155,7 +161,8 @@ export class GestionCarteComponent implements OnInit {
   showModalCreateUser() {
     this.clearForm();
     this.isFileUploaded=false;
-    this.modalCreateUser = true;
+    this.modalCreateUser = true; 
+    this.checked = false;
   }
 
   isValidEmail(email: string): boolean {
@@ -224,9 +231,7 @@ getDetailsCarte(id: any) {
     this.checked = this.detailCarte.is_active=== 1;
     this.lastValisation=this.detailCarte.is_active;
   });
-}
-
- 
+}  
 
 getFilePath(file: string) {
   return file.split("public/filaka/")[1];
@@ -358,7 +363,7 @@ onUploadUpdate() {
     if(this.f.length==0){
       this.disableUpdate = true;
       this.spinner.show("spinnerLoader");
-      this.serviceService.updateCard(this.detailCarte).subscribe(() => {
+      this.serviceService.cardStateNotification(this.detailCarte).subscribe(() => {
         this.getAllCard();
         this.checkDetailsCard = false;
         this.disableUpdate = false;
@@ -394,7 +399,7 @@ onUploadUpdate() {
                 is_active:this.detailCarte.is_active
               };
     
-              this.serviceService.updateCard(body).subscribe(() => {
+              this.serviceService.cardStateNotification(body).subscribe(() => {
                 this.getAllCard();
                 this.f = [];
                 this.clearDetail();
@@ -440,7 +445,7 @@ onUpload() {
           detail: "Champ titre manquant",
     });
     return;
-  } 
+  }  
 
   if(this.userCard==null && this.selectedUser==null)
   {
@@ -485,7 +490,7 @@ onUpload() {
               is_active:this.carteBody.is_active
             };
   
-            this.serviceService.registerCard(body).subscribe(
+            this.serviceService.cardStateNotification(body).subscribe(
               () => {
                 this.getAllCard();
                 this.f = [];
@@ -506,15 +511,16 @@ onUpload() {
               },
               (error) => {
                 let status = this.statusService.getStatus();
-                this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+                this.messageService.add({ severity: 'error', summary: 'Error', detail:  JSON.stringify(status) });
                 this.spinner.hide("spinnerLoader");
               }
             );
           }
         }
       },
-      (error) => {
+      (error) => { 
         let status = this.statusService.getStatus();
+        console.log("stataka"+status); 
         this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
       }
     );
@@ -522,20 +528,21 @@ onUpload() {
 
 
 } 
-confirmCloseDialog() {
-  this.clearUserCard() ;
-}
-
+  confirmCloseDialog() {
+    this.clearUserCard() ;
+  } 
 
   clearForm() {
     this.selectedUser=null;
     this.isFileUploaded=false;
     this.carteBody.titre = ""; 
    this.carteBody.is_active = 0;
+   this.detailCarte.is_active = 0;
   }
 
   clearUserCard()
   {
+    this.carteBody.is_active = 0;
     this.userCard=null;
     localStorage.removeItem('userCard');
     this.isVisible=true;
@@ -588,9 +595,10 @@ confirmCloseDialog() {
       this.getPageNumbers();
       this.skeleton = false;
     },
-    (error) => {
-      let status = this.statusService.getStatus();
+    (error) => { 
+      let status = this.statusService.getStatus(); 
       this.messageService.add({ severity: 'error', summary: 'Error', detail:  status });
+     
     }
     );
   }

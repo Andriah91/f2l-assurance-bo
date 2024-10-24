@@ -28,7 +28,10 @@ export class ErrorInterceptor implements HttpInterceptor {
           this.alertService.setStatus("Serveur actuellement indisponible");
         }
         else if (error.status === 422) {
-          this.alertService.setStatus(error.error.message);
+          this.alertService.setStatus(error.error.error);
+        }
+        else if (error.status === 409) {
+          this.alertService.setStatus(error);
         }
         else if (error.status === 401) {
           this.alertService.setStatus(error.error.message);
