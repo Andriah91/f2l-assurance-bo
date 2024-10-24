@@ -3,14 +3,14 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-    /* production: false,
+    production: false,
     url: 'https://api.app.assurances-f2l.fr/public',
     PATH_URL: 'https://api.app.assurances-f2l.fr/public/storage/filaka/', 
-    url_image: '/assets/img/', */
-  production: false,
+    url_image: '/assets/img/', 
+    /*production: false,
     url: 'http://localhost:8000',
     PATH_URL: 'http://localhost:8000/storage/filaka/',
-    url_image: '/assets/img/', 
+    url_image: '/assets/img/', */
 };
 
 /*

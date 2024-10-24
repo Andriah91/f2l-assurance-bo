@@ -111,8 +111,6 @@ export class GestionCarteComponent implements OnInit {
           this.users.push(this.userCard);  
           this.showModalCreateUser(); 
         }  
-    } else{
-      this.getAllUsers();
     }
    
     this.environments = environment;
@@ -141,9 +139,9 @@ export class GestionCarteComponent implements OnInit {
       this.serviceService.getAllClients(body).subscribe(
         (data: any) => {
           this.users = data.users; 
-          this.totalPages = data.userCount;
+          /*this.totalPages = data.userCount;
           this.getPageNumbers();
-          this.skeleton = false;
+          this.skeleton = false;*/
          
      
         },
@@ -163,6 +161,7 @@ export class GestionCarteComponent implements OnInit {
     this.isFileUploaded=false;
     this.modalCreateUser = true; 
     this.checked = false;
+    this.getAllUsers();
   }
 
   isValidEmail(email: string): boolean {
